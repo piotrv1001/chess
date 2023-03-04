@@ -1,5 +1,6 @@
 import { Board } from './../model/board';
 import { Component, OnInit } from '@angular/core';
+import { Square } from 'src/model/square';
 
 @Component({
   selector: 'app-root',
@@ -14,5 +15,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  onSquareClick(square: Square): void {
+    console.log('square', square);
   }
 }
