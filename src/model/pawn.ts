@@ -8,9 +8,9 @@ export class Pawn extends ChessEntity {
   ) {
     super(isWhite, currentPosition);
     if(isWhite) {
-      this.imgUrl = '/src/assets/images/white-pawn.png';
+      this.imgUrl = '/assets/images/white-pawn.png';
     } else {
-      this.imgUrl = '/src/assets/images/black-pawn.png';
+      this.imgUrl = '/assets/images/black-pawn.png';
     }
   }
   checkLegalMoves(): Position[] {

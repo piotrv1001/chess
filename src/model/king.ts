@@ -8,9 +8,9 @@ export class King extends ChessEntity {
   ) {
     super(isWhite, currentPosition);
     if(isWhite) {
-      this.imgUrl = '/src/assets/images/white-king.png';
+      this.imgUrl = 'assets/images/white-king.png';
     } else {
-      this.imgUrl = '/src/assets/images/black-king.png';
+      this.imgUrl = '/assets/images/black-king.png';
     }
   }
   checkLegalMoves(): Position[] {

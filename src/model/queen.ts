@@ -8,9 +8,9 @@ export class Queen extends ChessEntity {
   ) {
     super(isWhite, currentPosition);
     if(isWhite) {
-      this.imgUrl = '/src/assets/images/white-queen.png';
+      this.imgUrl = '/assets/images/white-queen.png';
     } else {
-      this.imgUrl = '/src/assets/images/black-queen.png';
+      this.imgUrl = '/assets/images/black-queen.png';
     }
   }
   checkLegalMoves(): Position[] {

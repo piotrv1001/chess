@@ -8,9 +8,9 @@ export class Rook extends ChessEntity {
   ) {
     super(isWhite, currentPosition);
     if(isWhite) {
-      this.imgUrl = '/src/assets/images/white-rook.png';
+      this.imgUrl = '/assets/images/white-rook.png';
     } else {
-      this.imgUrl = '/src/assets/images/black-rook.png';
+      this.imgUrl = '/assets/images/black-rook.png';
     }
   }
   checkLegalMoves(): Position[] {
