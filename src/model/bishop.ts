@@ -8,9 +8,9 @@ export class Bishop extends ChessEntity {
   ) {
     super(isWhite, currentPosition);
     if(isWhite) {
-      this.imgUrl = '/src/assets/images/white-bishop.png';
+      this.imgUrl = '/assets/images/white-bishop.png';
     } else {
-      this.imgUrl = '/src/assets/images/black-bishop.png';
+      this.imgUrl = '/assets/images/black-bishop.png';
     }
   }
   checkLegalMoves(): Position[] {

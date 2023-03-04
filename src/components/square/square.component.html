@@ -1,0 +1,5 @@
+<div [ngClass]="isWhite ? 'white-square' : 'dark-square'" class="square-wrapper">
+  <div class="img-wrapper">
+    <img *ngIf="occupiedBy" [src]="occupiedBy.imgUrl" alt="Chess piece" class="chess-piece-img">
+  </div>
+</div>

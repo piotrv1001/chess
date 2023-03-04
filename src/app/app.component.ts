@@ -14,12 +14,5 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // let bool = false;
-    // for(let i = 0; i < 64; i++) {
-    //   if(i !== 0 && i % 8 !== 0) {
-    //     bool = !bool;
-    //   }
-    //   this.squares.push(bool);
-    // }
   }
 }
