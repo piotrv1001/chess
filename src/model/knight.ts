@@ -1,6 +1,18 @@
-import { Position, ChessEntity } from './chess-entity';
+import { Position } from 'src/app/types/position';
+import { ChessEntity } from './chess-entity';
 
 export class Knight extends ChessEntity {
+  constructor(
+    isWhite: boolean,
+    currentPosition: Position
+  ) {
+    super(isWhite, currentPosition);
+    if(isWhite) {
+      this.imgUrl = '/src/assets/images/white-knight.png';
+    } else {
+      this.imgUrl = '/src/assets/images/black-knight.png';
+    }
+  }
   checkLegalMoves(): Position[] {
     const row = this.currentPosition.row;
     const col = this.currentPosition.column;

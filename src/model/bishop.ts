@@ -1,6 +1,18 @@
-import { Position, ChessEntity } from './chess-entity';
+import { Position } from 'src/app/types/position';
+import { ChessEntity } from './chess-entity';
 
 export class Bishop extends ChessEntity {
+  constructor(
+    isWhite: boolean,
+    currentPosition: Position
+  ) {
+    super(isWhite, currentPosition);
+    if(isWhite) {
+      this.imgUrl = '/src/assets/images/white-bishop.png';
+    } else {
+      this.imgUrl = '/src/assets/images/black-bishop.png';
+    }
+  }
   checkLegalMoves(): Position[] {
     const moves: Position[] = [];
     let row = this.currentPosition.row;

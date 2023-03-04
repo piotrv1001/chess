@@ -1,6 +1,18 @@
-import { Position, ChessEntity } from './chess-entity';
+import { Position } from 'src/app/types/position';
+import { ChessEntity } from './chess-entity';
 
 export class Pawn extends ChessEntity {
+  constructor(
+    isWhite: boolean,
+    currentPosition: Position
+  ) {
+    super(isWhite, currentPosition);
+    if(isWhite) {
+      this.imgUrl = '/src/assets/images/white-pawn.png';
+    } else {
+      this.imgUrl = '/src/assets/images/black-pawn.png';
+    }
+  }
   checkLegalMoves(): Position[] {
     const moves: Position[] = [];
     const upperLimit = (this.isWhite) ? 7 : 2;
