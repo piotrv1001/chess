@@ -1,6 +1,6 @@
 <div class="container">
   <div class="chess-board">
-    <div *ngFor="let square of squares; let i = index" [ngClass]="square ? 'dark-square' : 'white-square'" class="square">
+    <div *ngFor="let square of board.squares; let i = index" [ngClass]="square.isWhite ? 'white-square' : 'dark-square'" class="square">
     </div>
   </div>
 </div>
