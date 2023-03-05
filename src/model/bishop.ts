@@ -1,5 +1,7 @@
+import { Move } from './move';
 import { Position } from 'src/app/types/position';
 import { ChessEntity } from './chess-entity';
+import { Square } from './square';
 
 export class Bishop extends ChessEntity {
   constructor(
@@ -13,45 +15,46 @@ export class Bishop extends ChessEntity {
       this.imgUrl = '/assets/images/black-bishop.png';
     }
   }
-  checkLegalMoves(): Position[] {
-    const moves: Position[] = [];
-    let row = this.currentPosition.row;
-    let col = this.currentPosition.column;
-    while(row < 8 && col < 8) {
-      row++;
-      col++;
-      moves.push(
-        { row: row, column: col }
-      );
-    }
-    row = this.currentPosition.row;
-    col = this.currentPosition.column;
-    while(row < 8 && col > 1) {
-      row++;
-      col--;
-      moves.push(
-        { row: row, column: col }
-      );
-    }
-    row = this.currentPosition.row;
-    col = this.currentPosition.column;
-    while(row > 8 && col < 8) {
-      row--;
-      col++;
-      moves.push(
-        { row: row, column: col }
-      );
-    }
-    row = this.currentPosition.row;
-    col = this.currentPosition.column;
-    while(row > 1 && col > 1) {
-      row--;
-      col--;
-      moves.push(
-        { row: row, column: col }
-      );
-    }
+  override checkLegalMoves(squares: Square[]): Move[] {
+    return [];
+    // const moves: Position[] = [];
+    // let row = this.currentPosition.row;
+    // let col = this.currentPosition.column;
+    // while(row < 8 && col < 8) {
+    //   row++;
+    //   col++;
+    //   moves.push(
+    //     { row: row, column: col }
+    //   );
+    // }
+    // row = this.currentPosition.row;
+    // col = this.currentPosition.column;
+    // while(row < 8 && col > 1) {
+    //   row++;
+    //   col--;
+    //   moves.push(
+    //     { row: row, column: col }
+    //   );
+    // }
+    // row = this.currentPosition.row;
+    // col = this.currentPosition.column;
+    // while(row > 8 && col < 8) {
+    //   row--;
+    //   col++;
+    //   moves.push(
+    //     { row: row, column: col }
+    //   );
+    // }
+    // row = this.currentPosition.row;
+    // col = this.currentPosition.column;
+    // while(row > 1 && col > 1) {
+    //   row--;
+    //   col--;
+    //   moves.push(
+    //     { row: row, column: col }
+    //   );
+    // }
 
-    return moves;
+    // return moves;
   }
 }

@@ -1,5 +1,7 @@
 import { Position } from 'src/app/types/position';
 import { ChessEntity } from './chess-entity';
+import { Move } from './move';
+import { Square } from './square';
 
 export class King extends ChessEntity {
   constructor(
@@ -13,16 +15,17 @@ export class King extends ChessEntity {
       this.imgUrl = '/assets/images/black-king.png';
     }
   }
-  checkLegalMoves(): Position[] {
-    const moves: Position[] = []
-    for(let i = this.currentPosition.row - 1; i <= this.currentPosition.row + 1; i++) {
-      if(i >= 8 || i <= 1) break;
-      for(let j = this.currentPosition.column - 1; j <= this.currentPosition.column + 1; j++) {
-        if(j >= 8 || j <= 1) break;
-        moves.push({ row: i, column: j });
-      }
-    }
-    return moves;
+  override checkLegalMoves(squares: Square[]): Move[] {
+    return [];
+    // const moves: Position[] = []
+    // for(let i = this.currentPosition.row - 1; i <= this.currentPosition.row + 1; i++) {
+    //   if(i >= 8 || i <= 1) break;
+    //   for(let j = this.currentPosition.column - 1; j <= this.currentPosition.column + 1; j++) {
+    //     if(j >= 8 || j <= 1) break;
+    //     moves.push({ row: i, column: j });
+    //   }
+    // }
+    // return moves;
   }
 
 }

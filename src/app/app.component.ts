@@ -27,24 +27,27 @@ export class AppComponent implements OnInit {
     const foundMove = this.legalMoves.find(move => move.endingPos === square);
     if(foundMove) {
       this.makeMove(foundMove);
-    } else {
+    }
+    // if white turn and piece is white (and vice versa) -> show legal moves
+    else if(square.occupiedBy?.isWhite === this.isWhiteMove) {
       this.showLegalMoves(square);
     }
   }
 
   private showLegalMoves(square: Square): void {
-    const startingPos = this.board.squares[52];
-    const endingPos1 = this.board.squares[1];
-    const endingPos2 = this.board.squares[44];
-    const piece = this.board.squares[52].occupiedBy;
-    this.legalMoves.push(new Move(startingPos, endingPos1, piece!));
-    this.legalMoves.push(new Move(startingPos, endingPos2, piece!));
-    this.squareService.notifyAboutLegalMoves(this.legalMoves);
+    this.legalMoves = square.occupiedBy?.checkLegalMoves(this.board.squares) ?? [];
+    this.notifyLegalMoves();
   }
 
   private makeMove(move: Move): void {
     this.board.makeMove(move);
     this.moveHistory.push(move);
     this.isWhiteMove = !this.isWhiteMove;
+    this.legalMoves = [];
+    this.notifyLegalMoves();
+  }
+
+  private notifyLegalMoves(): void {
+    this.squareService.notifyAboutLegalMoves(this.legalMoves);
   }
 }
