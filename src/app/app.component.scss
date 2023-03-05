@@ -12,8 +12,10 @@
 
 .chess-board {
   display: grid;
-  width: 90vh;
-  height: 90vh;
+  width: 90vw;
+  height: 90vw;
+  max-width: 1200px;
+  max-height: 1200px;
   grid-template-rows: repeat(8, 1fr);
   grid-template-columns: repeat(8, 1fr);
 }
