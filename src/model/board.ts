@@ -10,6 +10,7 @@ import { Square } from './square';
 
 export class Board {
   squares: Square[];
+  lastMove?: Move;
   constructor() {
     this.squares = this.initSquares();
   }
@@ -19,7 +20,20 @@ export class Board {
     if(startingPos && endingPos) {
       startingPos.occupiedBy = null;
       endingPos.occupiedBy = move.piece;
+      this.lastMove = move;
+      console.log('is king in check', this.isKingInCheck());
     }
+  }
+  isKingInCheck(): boolean {
+    const isWhite = !this.lastMove?.piece.isWhite;
+    const kingSquare = this.squares.find(square => square.occupiedBy instanceof King && square.occupiedBy.isWhite === isWhite);
+    if(kingSquare) {
+      const legalMoves = this.lastMove?.piece.checkLegalMoves(this.squares);
+      if(legalMoves) {
+        return legalMoves.find(move => move.endingPos === kingSquare) !== undefined;
+      }
+    }
+    return false;
   }
   private initSquares(): Square[] {
     const initialSquares: Square[] = [];
