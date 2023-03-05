@@ -33,7 +33,7 @@ export class Rook extends ChessEntity {
     }
     return [];
   }
-  private addMove(currSquare: Square, squares: Square[], condition: boolean, increment: boolean, isRow: boolean): Move[] {
+  addMove(currSquare: Square, squares: Square[], condition: boolean, increment: boolean, isRow: boolean): Move[] {
     const moves: Move[] = [];
     let row = currSquare.position.row;
     let col = currSquare.position.column;

@@ -1,7 +1,9 @@
+import { Bishop } from './bishop';
 import { Move } from './move';
 import { Position } from 'src/app/types/position';
 import { ChessEntity } from './chess-entity';
 import { Square } from './square';
+import { Rook } from './rook';
 
 export class Queen extends ChessEntity {
   constructor(
@@ -16,73 +18,31 @@ export class Queen extends ChessEntity {
     }
   }
   override checkLegalMoves(squares: Square[]): Move[] {
+    const currSquare = squares.find(square => square.occupiedBy === this);
+    if(currSquare && currSquare.occupiedBy) {
+      const tempRook = new Rook(currSquare.occupiedBy.isWhite, currSquare.position);
+      const tempBishop = new Bishop(currSquare.occupiedBy.isWhite, currSquare.position);
+      const currPos = currSquare.position;
+      const row = currPos.row;
+      const col = currPos.column;
+      const conditionTopLeft = (row >= 1 && col >= 1);
+      const conditionTopRight = (row >= 1 && col <= 8);
+      const conditionBottomLeft = (row <= 8 && col >= 1);
+      const conditionBottomRight = (row <= 8 && col <= 8);
+      const conditionLeft = (row >= 1);
+      const conditionRight = (row <= 8);
+      const conditionBottom = (col >= 1);
+      const conditionTop = (col <= 8);
+      return [...tempBishop.addMove(currSquare, squares, conditionTopLeft, false, false),
+        ...tempBishop.addMove(currSquare, squares, conditionTopRight, false, true),
+        ...tempBishop.addMove(currSquare, squares, conditionBottomLeft, true, false),
+        ...tempBishop.addMove(currSquare, squares, conditionBottomRight, true, true),
+        ...tempRook.addMove(currSquare, squares, conditionLeft, false, true),
+        ...tempRook.addMove(currSquare, squares, conditionRight, true, true),
+        ...tempRook.addMove(currSquare, squares, conditionBottom, false, false),
+        ...tempRook.addMove(currSquare, squares, conditionTop, true, false)
+      ]
+    }
     return [];
-    // const moves: Position[] = [];
-    // let rowLeft = this.currentPosition.row;
-    // let rowRight = this.currentPosition.row;
-    // let colTop = this.currentPosition.column;
-    // let colBottom = this.currentPosition.column;
-    // while(rowLeft >= 1) {
-    //   moves.push(
-    //     { row: rowLeft, column: this.currentPosition.column }
-    //   );
-    //   rowLeft--;
-    // }
-    // while(rowRight <= 8) {
-    //   moves.push(
-    //     { row: rowRight, column: this.currentPosition.column }
-    //   );
-    //   rowLeft++;
-    // }
-    // while(colTop >= 1) {
-    //   moves.push(
-    //     { row: this.currentPosition.row, column: colTop }
-    //   );
-    //   colTop--;
-    // }
-    // while(colBottom <= 8) {
-    //   moves.push(
-    //     { row: this.currentPosition.row, column: colBottom }
-    //   );
-    //   colBottom++;
-    // }
-    // let row = this.currentPosition.row;
-    // let col = this.currentPosition.column;
-    // while(row < 8 && col < 8) {
-    //   row++;
-    //   col++;
-    //   moves.push(
-    //     { row: row, column: col }
-    //   );
-    // }
-    // row = this.currentPosition.row;
-    // col = this.currentPosition.column;
-    // while(row < 8 && col > 1) {
-    //   row++;
-    //   col--;
-    //   moves.push(
-    //     { row: row, column: col }
-    //   );
-    // }
-    // row = this.currentPosition.row;
-    // col = this.currentPosition.column;
-    // while(row > 8 && col < 8) {
-    //   row--;
-    //   col++;
-    //   moves.push(
-    //     { row: row, column: col }
-    //   );
-    // }
-    // row = this.currentPosition.row;
-    // col = this.currentPosition.column;
-    // while(row > 1 && col > 1) {
-    //   row--;
-    //   col--;
-    //   moves.push(
-    //     { row: row, column: col }
-    //   );
-    // }
-
-    // return moves;
   }
 }
