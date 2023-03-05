@@ -54,7 +54,7 @@ export class Pawn extends ChessEntity {
   }
   private addMove(pos: Position, squares: Square[], currSquare: Square, isCapture: boolean = false): Move | null {
     const foundSquare = squares.find(square => square.position.row === pos.row && square.position.column === pos.column);
-    if(foundSquare && ((foundSquare.occupiedBy == null && !isCapture) || (foundSquare.occupiedBy != null && isCapture))) {
+    if(foundSquare && ((foundSquare.occupiedBy == null && !isCapture) || (foundSquare.occupiedBy != null && isCapture && foundSquare.occupiedBy.isWhite !== currSquare.occupiedBy?.isWhite))) {
       return new Move(currSquare, foundSquare, this);
     }
     return null;
