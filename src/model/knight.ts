@@ -16,32 +16,41 @@ export class Knight extends ChessEntity {
     }
   }
   override checkLegalMoves(squares: Square[]): Move[] {
+    const currSquare = squares.find(square => square.occupiedBy === this);
+    if(currSquare) {
+      const currPos = currSquare.position;
+      const row = currPos.row;
+      const col = currPos.column;
+       return this.addToMoves(
+        currSquare, squares,
+        { row: row + 1, column: col - 2 },
+        { row: row + 1, column: col + 2 },
+        { row: row + 2, column: col - 1 },
+        { row: row + 2, column: col + 1 },
+        { row: row - 1, column: col + 2 },
+        { row: row - 1, column: col - 2 },
+        { row: row - 2, column: col - 1 },
+        { row: row - 2, column: col + 1 },
+      );
+    }
     return [];
-    // const row = this.currentPosition.row;
-    // const col = this.currentPosition.column;
-    // return this.addToMoves(
-    //   { row: row + 1, column: col - 2 },
-    //   { row: row + 1, column: col + 2 },
-    //   { row: row + 2, column: col - 1 },
-    //   { row: row + 2, column: col + 1 },
-    //   { row: row - 1, column: col + 2 },
-    //   { row: row - 1, column: col - 2 },
-    //   { row: row - 2, column: col - 1 },
-    //   { row: row - 2, column: col + 1 },
-    // );
   }
-  private checkBounds(row: number, column: number): boolean {
-    return row >= 1 && row <= 8 && column >= 1 && column <= 8;
-  }
-  private addToMoves(...positions: Position[]): Position[] {
-    const moves: Position[] = [];
+  private addToMoves(currSquare: Square, squares: Square[], ...positions: Position[]): Move[] {
+    const moves: Move[] = [];
     for(const pos of positions) {
       if(this.checkBounds(pos.row, pos.column)) {
-        moves.push(
-          { row: pos.row, column: pos.column }
-        );
+        const foundSquare = squares.find(square => square.position.row === pos.row && square.position.column === pos.column);
+        if(foundSquare && foundSquare.occupiedBy?.isWhite !== currSquare.occupiedBy?.isWhite) {
+          if(currSquare.occupiedBy) {
+            const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
+            moves.push(move);
+          }
+        }
       }
     }
     return moves;
+  }
+  private checkBounds(row: number, column: number): boolean {
+    return row >= 1 && row <= 8 && column >= 1 && column <= 8;
   }
 }

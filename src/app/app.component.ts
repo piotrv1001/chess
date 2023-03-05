@@ -28,8 +28,8 @@ export class AppComponent implements OnInit {
     if(foundMove) {
       this.makeMove(foundMove);
     }
-    // if white turn and piece is white (and vice versa) -> show legal moves
-    else if(square.occupiedBy?.isWhite === this.isWhiteMove) {
+    // if square not occupied or white turn and piece is white (and vice versa) -> show legal moves (empty array in case of unoccupied square)
+    else if(square.occupiedBy == null || square.occupiedBy?.isWhite === this.isWhiteMove) {
       this.showLegalMoves(square);
     }
   }
