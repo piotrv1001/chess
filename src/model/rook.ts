@@ -16,36 +16,44 @@ export class Rook extends ChessEntity {
     }
   }
   override checkLegalMoves(squares: Square[]): Move[] {
+    const currSquare = squares.find(square => square.occupiedBy === this);
+    if(currSquare) {
+      const currPos = currSquare.position;
+      const row = currPos.row;
+      const col = currPos.column;
+      const conditionLeft = (row >= 1);
+      const conditionRight = (row <= 8);
+      const conditionBottom = (col >= 1);
+      const conditionTop = (col <= 8);
+      return [...this.addMove(currSquare, squares, conditionLeft, false, true),
+        ...this.addMove(currSquare, squares, conditionRight, true, true),
+        ...this.addMove(currSquare, squares, conditionBottom, false, false),
+        ...this.addMove(currSquare, squares, conditionTop, true, false)
+      ]
+    }
     return [];
-    // const moves: Position[] = [];
-    // let rowLeft = this.currentPosition.row;
-    // let rowRight = this.currentPosition.row;
-    // let colTop = this.currentPosition.column;
-    // let colBottom = this.currentPosition.column;
-    // while(rowLeft >= 1) {
-    //   moves.push(
-    //     { row: rowLeft, column: this.currentPosition.column }
-    //   );
-    //   rowLeft--;
-    // }
-    // while(rowRight <= 8) {
-    //   moves.push(
-    //     { row: rowRight, column: this.currentPosition.column }
-    //   );
-    //   rowLeft++;
-    // }
-    // while(colTop >= 1) {
-    //   moves.push(
-    //     { row: this.currentPosition.row, column: colTop }
-    //   );
-    //   colTop--;
-    // }
-    // while(colBottom <= 8) {
-    //   moves.push(
-    //     { row: this.currentPosition.row, column: colBottom }
-    //   );
-    //   colBottom++;
-    // }
-    // return moves;
+  }
+  private addMove(currSquare: Square, squares: Square[], condition: boolean, increment: boolean, isRow: boolean): Move[] {
+    const moves: Move[] = [];
+    let row = currSquare.position.row;
+    let col = currSquare.position.column;
+    const multiplier = (increment) ? 1 : -1;
+    while(condition) {
+      (isRow) ? row += multiplier : col += multiplier;
+      const foundSquare = squares.find(square => square.position.row === row && square.position.column === col);
+      const occupiedByEnemy = (foundSquare?.occupiedBy?.isWhite !== currSquare.occupiedBy?.isWhite);
+      if(foundSquare && (foundSquare.occupiedBy == null || occupiedByEnemy)) {
+        if(currSquare.occupiedBy) {
+          const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
+          moves.push(move);
+          if(foundSquare.occupiedBy != null && occupiedByEnemy) {
+            break;
+          }
+        }
+      } else {
+        break;
+      }
+    }
+    return moves;
   }
 }
