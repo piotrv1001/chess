@@ -1,3 +1,4 @@
+import { Move } from './move';
 import { Pawn } from './pawn';
 import { King } from './king';
 import { Queen } from './queen';
@@ -11,6 +12,14 @@ export class Board {
   squares: Square[];
   constructor() {
     this.squares = this.initSquares();
+  }
+  makeMove(move: Move): void {
+    const startingPos = this.squares.find(square => square.position === move.startingPos.position);
+    const endingPos = this.squares.find(square => square.position === move.endingPos.position);
+    if(startingPos && endingPos) {
+      startingPos.occupiedBy = null;
+      endingPos.occupiedBy = move.piece;
+    }
   }
   private initSquares(): Square[] {
     const initialSquares: Square[] = [];
