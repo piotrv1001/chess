@@ -1,3 +1,4 @@
+import { SquareService } from './services/square.service';
 import { Board } from './../model/board';
 import { Component, OnInit } from '@angular/core';
 import { Square } from 'src/model/square';
@@ -10,7 +11,7 @@ import { Square } from 'src/model/square';
 export class AppComponent implements OnInit {
   board: Board;
 
-  constructor() {
+  constructor(private squareService: SquareService) {
     this.board = new Board();
   }
 
@@ -18,6 +19,14 @@ export class AppComponent implements OnInit {
   }
 
   onSquareClick(square: Square): void {
-    console.log('square', square);
+    this.squareService.notifyAllSquares(square);
+    this.showLegalMoves();
+  }
+
+  private showLegalMoves(): void {
+    const legalMoves: Square[] = [];
+    legalMoves.push(this.board.squares[36]);
+    legalMoves.push(this.board.squares[44]);
+    this.squareService.notifyAboutLegalMoves(legalMoves);
   }
 }
