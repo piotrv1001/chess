@@ -1,3 +1,4 @@
+import { Move } from './../../model/move';
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { Square } from "src/model/square";
@@ -8,13 +9,13 @@ import { Square } from "src/model/square";
 export class SquareService {
 
   private squareClickSubject: Subject<Square> = new Subject<Square>();
-  private legalMoveSubject: Subject<Square[]> = new Subject<Square[]>();
+  private legalMoveSubject: Subject<Move[]> = new Subject<Move[]>();
 
   getSquareClickObservable(): Observable<Square> {
     return this.squareClickSubject.asObservable();
   }
 
-  getLegalMoveObservable(): Observable<Square[]> {
+  getLegalMoveObservable(): Observable<Move[]> {
     return this.legalMoveSubject.asObservable();
   }
 
@@ -22,8 +23,8 @@ export class SquareService {
     this.squareClickSubject.next(square);
   }
 
-  notifyAboutLegalMoves(squares: Square[]): void {
-    this.legalMoveSubject.next(squares);
+  notifyAboutLegalMoves(moves: Move[]): void {
+    this.legalMoveSubject.next(moves);
   }
 
 }

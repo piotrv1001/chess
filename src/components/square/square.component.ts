@@ -15,6 +15,7 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() squareClick = new EventEmitter<Square>();
 
   isLegalMove: boolean = false;
+  isCapture: boolean = false;
   private otherSquareClickSub?: Subscription;
   private legalMoveSub?: Subscription;
   private squareClickSub?: Subscription;
@@ -43,8 +44,10 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
     this.legalMoveSub = this.squareService.getLegalMoveObservable()
       .subscribe(legalMoves => {
         // check if this square is in the array of legal moves
-        if(this.square && legalMoves.includes(this.square)) {
+        const foundMove = legalMoves.find(move => move.endingPos === this.square);
+        if(foundMove) {
           this.isLegalMove = true;
+          this.isCapture = foundMove.isCapture;
         } else {
           this.isLegalMove = false;
         }
