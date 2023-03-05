@@ -1,3 +1,4 @@
+import { Move } from './../model/move';
 import { SquareService } from './services/square.service';
 import { Board } from './../model/board';
 import { Component, OnInit } from '@angular/core';
@@ -10,6 +11,8 @@ import { Square } from 'src/model/square';
 })
 export class AppComponent implements OnInit {
   board: Board;
+  isWhiteMove: boolean = true;
+  moveHistory: Move[] = [];
 
   constructor(private squareService: SquareService) {
     this.board = new Board();
@@ -24,9 +27,13 @@ export class AppComponent implements OnInit {
   }
 
   private showLegalMoves(): void {
-    const legalMoves: Square[] = [];
-    legalMoves.push(this.board.squares[36]);
-    legalMoves.push(this.board.squares[44]);
+    const legalMoves: Move[] = [];
+    const startingPos = this.board.squares[52];
+    const endingPos1 = this.board.squares[1];
+    const endingPos2 = this.board.squares[44];
+    const piece = this.board.squares[52].occupiedBy;
+    legalMoves.push(new Move(startingPos, endingPos1, piece!));
+    legalMoves.push(new Move(startingPos, endingPos2, piece!));
     this.squareService.notifyAboutLegalMoves(legalMoves);
   }
 }
