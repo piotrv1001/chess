@@ -33,7 +33,7 @@ export class Bishop extends ChessEntity {
     }
     return [];
   }
-  private addMove(currSquare: Square, squares: Square[], condition: boolean, rowIncrement: boolean, colIncrement: boolean): Move[] {
+  addMove(currSquare: Square, squares: Square[], condition: boolean, rowIncrement: boolean, colIncrement: boolean): Move[] {
     const moves: Move[] = [];
     let row = currSquare.position.row;
     let col = currSquare.position.column;
