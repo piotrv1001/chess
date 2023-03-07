@@ -1,25 +1,27 @@
+import { CheckmateDialog } from './../components/checkmate-dialog/checkmate-dialog.component';
 import { Move } from './../model/move';
 import { SquareService } from './services/square.service';
 import { Board } from './../model/board';
 import { Component, OnInit } from '@angular/core';
 import { Square } from 'src/model/square';
 
+import { MatDialog } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   board: Board;
   isWhiteMove: boolean = true;
   moveHistory: Move[] = [];
   legalMoves: Move[] = [];
 
-  constructor(private squareService: SquareService) {
+  constructor(
+    private squareService: SquareService,
+    public dialog: MatDialog) {
     this.board = new Board();
-  }
-
-  ngOnInit(): void {
   }
 
   onSquareClick(square: Square): void {
@@ -27,6 +29,9 @@ export class AppComponent implements OnInit {
     const foundMove = this.legalMoves.find(move => move.endingPos === square);
     if(foundMove) {
       this.makeMove(foundMove);
+      if(this.board.isCheckMate) {
+        this.openCheckmateDialog();
+      }
     }
     // if square not occupied or white turn and piece is white (and vice versa) -> show legal moves (empty array in case of unoccupied square)
     else if(square.occupiedBy == null || square.occupiedBy?.isWhite === this.isWhiteMove) {
@@ -49,5 +54,9 @@ export class AppComponent implements OnInit {
 
   private notifyLegalMoves(): void {
     this.squareService.notifyAboutLegalMoves(this.legalMoves);
+  }
+
+  private openCheckmateDialog(): void {
+    this.dialog.open(CheckmateDialog);
   }
 }
