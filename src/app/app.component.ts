@@ -2,7 +2,7 @@ import { CheckmateDialog } from './../components/checkmate-dialog/checkmate-dial
 import { Move } from './../model/move';
 import { SquareService } from './services/square.service';
 import { Board } from './../model/board';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Square } from 'src/model/square';
 
 import { MatDialog } from '@angular/material/dialog';
@@ -40,7 +40,8 @@ export class AppComponent {
   }
 
   private showLegalMoves(square: Square): void {
-    this.legalMoves = square.occupiedBy?.checkLegalMoves(this.board.squares) ?? [];
+    // this.legalMoves = square.occupiedBy?.checkLegalMoves(this.board.squares) ?? [];
+    this.legalMoves = this.board.legalMoves.get(square) ?? [];
     this.notifyLegalMoves();
   }
 
