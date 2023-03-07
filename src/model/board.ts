@@ -11,8 +11,20 @@ import { Square } from './square';
 export class Board {
   squares: Square[];
   lastMove?: Move;
+  legalMoves: Map<Square, Move[]> = new Map();
+  isCheckMate: boolean = false;
   constructor() {
     this.squares = this.initSquares();
+  }
+  private checkIfCheckmate(isWhite: boolean): boolean {
+    for(const square of this.squares) {
+      if(square.occupiedBy == null) continue;
+      else if(square.occupiedBy.isWhite === isWhite) {
+        const moves = square.occupiedBy.checkLegalMoves(this.squares);
+        this.legalMoves?.set(square, moves);
+      }
+    }
+    return this.legalMoves?.size === 0;
   }
   makeMove(move: Move): void {
     const startingPos = this.squares.find(square => square.position === move.startingPos.position);
@@ -21,11 +33,13 @@ export class Board {
       startingPos.occupiedBy = null;
       endingPos.occupiedBy = move.piece;
       this.lastMove = move;
-      console.log('is king in check', this.isKingInCheck());
     }
+    const isWhite = !move.piece.isWhite;
+    this.isCheckMate = this.checkIfCheckmate(isWhite);
   }
+  // check if the king of the player who just made a move is in check -> if yes, that move is illegal
   isKingInCheck(): boolean {
-    const isWhite = !this.lastMove?.piece.isWhite;
+    const isWhite = this.lastMove?.piece.isWhite;
     const kingSquare = this.squares.find(square => square.occupiedBy instanceof King && square.occupiedBy.isWhite === isWhite);
     if(kingSquare) {
       const legalMoves = this.lastMove?.piece.checkLegalMoves(this.squares);
