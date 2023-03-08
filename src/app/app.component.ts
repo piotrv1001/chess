@@ -57,6 +57,8 @@ export class AppComponent {
   }
 
   private openCheckmateDialog(): void {
-    this.dialog.open(CheckmateDialog);
+    this.dialog.open(CheckmateDialog, {
+      data: { gameResult: this.board.gameResult }
+    });
   }
 }
