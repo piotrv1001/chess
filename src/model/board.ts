@@ -1,3 +1,4 @@
+import { GameResult } from './../app/types/game-result';
 import { Move } from './move';
 import { Pawn } from './pawn';
 import { King } from './king';
@@ -15,6 +16,7 @@ export class Board {
   legalMoves: Map<Square, Move[]> = new Map();
   enemyMoves: Map<Square, Move[]> = new Map();
   isCheckMate: boolean = false;
+  gameResult: GameResult = GameResult.IN_PROGRESS;
   pathToCheck: Square[] = []; // if we are in check we have to know the path to check, so every piece can only move onto that path to block the check
   pinned: Pinned[] = []; // pinned pieces that can only move in the line of pin
   constructor() {
@@ -82,15 +84,32 @@ export class Board {
     this.enemyMoves.clear();
     const isWhite = !move.piece.isWhite;
     this.isCheckMate = this.checkIfCheckmate(isWhite);
+    if(this.isCheckMate) {
+      if(!this.isKingInCheck()) {
+        this.gameResult = GameResult.DRAW;
+      } else {
+        if(isWhite) {
+          this.gameResult = GameResult.BLACK_WON;
+        } else {
+          this.gameResult = GameResult.WHITE_WON;
+        }
+      }
+    }
   }
-  isKingInLineOfCheck(): boolean {
-    const isWhite = this.lastMove?.piece.isWhite;
+  isKingInCheck(): boolean {
+    const isWhite = !this.lastMove?.piece.isWhite;
     const kingSquare = this.squares.find(square => square.occupiedBy instanceof King && square.occupiedBy.isWhite === isWhite);
     if(kingSquare) {
-      const legalMoves = this.lastMove?.piece.checkLegalMoves(this);
-      if(legalMoves) {
-        return legalMoves.find(move => move.endingPos === kingSquare) !== undefined;
+      for(const [, moves] of this.enemyMoves) {
+        if(moves.map(move => move.endingPos).includes(kingSquare)) {
+          return true;
+        }
       }
+      return false;
+      // const legalMoves = this.lastMove?.piece.checkLegalMoves(this);
+      // if(legalMoves) {
+      //   return legalMoves.find(move => move.endingPos === kingSquare) !== undefined;
+      // }
     }
     return false;
   }
