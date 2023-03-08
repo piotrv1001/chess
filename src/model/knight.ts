@@ -2,6 +2,7 @@ import { Move } from './move';
 import { Position } from 'src/app/types/position';
 import { ChessEntity } from './chess-entity';
 import { Square } from './square';
+import { Board } from './board';
 
 export class Knight extends ChessEntity {
   constructor(
@@ -15,7 +16,8 @@ export class Knight extends ChessEntity {
       this.imgUrl = '/assets/images/black-knight.png';
     }
   }
-  override checkLegalMoves(squares: Square[]): Move[] {
+  override checkLegalMoves(board: Board): Move[] {
+    const squares = board.squares;
     const currSquare = squares.find(square => square.occupiedBy === this);
     if(currSquare) {
       const currPos = currSquare.position;
