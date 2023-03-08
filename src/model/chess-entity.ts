@@ -18,7 +18,7 @@ export class ChessEntity implements IChessEntity {
     public currentPosition: Position,
     public imgUrl?: string
   ) {}
-  checkLegalMoves(board: Board): Move[] {
+  checkLegalMoves(board: Board, enemyMoves: boolean = false): Move[] {
     return [];
   }
   makeMove(square: Position): void {

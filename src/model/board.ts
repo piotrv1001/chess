@@ -23,13 +23,18 @@ export class Board {
   }
   private checkIfCheckmate(isWhite: boolean): boolean {
     this.calculateLegalMoves(isWhite);
-    return this.legalMoves?.size === 0;
+    for(const [, moves] of this.legalMoves) {
+      if(moves.length > 0) {
+        return false;
+      }
+    }
+    return true;
   }
   private calculateLegalMoves(isWhite: boolean): void {
     for(const square of this.squares) {
       if(square.occupiedBy == null) continue;
       else if(square.occupiedBy.isWhite !== isWhite) {
-        const moves = square.occupiedBy.checkLegalMoves(this);
+        const moves = square.occupiedBy.checkLegalMoves(this, true);
         this.enemyMoves?.set(square, moves);
       }
     }
@@ -50,7 +55,7 @@ export class Board {
               }
             }
             return true;
-          })
+          });
         }
         // handle pinned pieces
         const pinnedPieceArray = this.pinned.map(pinned => pinned.pinnedPiece);
