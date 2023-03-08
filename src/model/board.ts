@@ -39,6 +39,16 @@ export class Board {
         if(this.pathToCheck.length > 0) {
           moves = moves.filter(move => this.pathToCheck.includes(move.endingPos));
         }
+        moves = moves.filter(move => {
+          if(move.piece instanceof King) {
+            for(const [square, moves] of this.enemyMoves) {
+              if(moves.map(move => move.endingPos).includes(move.endingPos)) {
+                return false;
+              }
+            }
+          }
+          return true;
+        })
         this.legalMoves?.set(square, moves);
       }
     }
