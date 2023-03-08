@@ -19,12 +19,17 @@ export class AppComponent {
   legalMoves: Move[] = [];
   boardVersionHistory: Board[] = [];
   currentBoardVersion = -1; // index in the boardVersionHistory array
+  defaultOrientation: boolean = true;
 
   constructor(
     private squareService: SquareService,
     public dialog: MatDialog) {
     this.board = new Board();
     this.updateBoardVersionHistory();
+  }
+
+  get squares(): Square[] {
+    return this.defaultOrientation ? this.board.squares : this.board.squares.reverse();
   }
 
   onSquareClick(square: Square): void {
@@ -40,6 +45,10 @@ export class AppComponent {
     else if(square.occupiedBy == null || square.occupiedBy?.isWhite === this.isWhiteMove) {
       this.showLegalMoves(square);
     }
+  }
+
+  flipBoard(): void {
+    this.defaultOrientation = !this.defaultOrientation;
   }
 
   resetBoard(): void {
