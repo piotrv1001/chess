@@ -40,7 +40,6 @@ export class AppComponent {
   }
 
   private showLegalMoves(square: Square): void {
-    // this.legalMoves = square.occupiedBy?.checkLegalMoves(this.board.squares) ?? [];
     this.legalMoves = this.board.legalMoves.get(square) ?? [];
     this.notifyLegalMoves();
   }

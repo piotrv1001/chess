@@ -13,6 +13,8 @@ export class Board {
   lastMove?: Move;
   legalMoves: Map<Square, Move[]> = new Map();
   isCheckMate: boolean = false;
+  squaresAttackedByEnemey: Square[] = []; // to prevent the king from walking into a check
+  pathInCheck: Square[] = []; // if we are in check we have to know the path to check, so every piece can only move onto that path to block the check
   constructor() {
     this.squares = this.initSquares();
     this.checkIfCheckmate(true);
@@ -38,6 +40,17 @@ export class Board {
     const isWhite = !move.piece.isWhite;
     this.isCheckMate = this.checkIfCheckmate(isWhite);
   }
+  isKingInLineOfCheck(): boolean {
+    const isWhite = this.lastMove?.piece.isWhite;
+    const kingSquare = this.squares.find(square => square.occupiedBy instanceof King && square.occupiedBy.isWhite === isWhite);
+    if(kingSquare) {
+      const legalMoves = this.lastMove?.piece.checkLegalMoves(this.squares);
+      if(legalMoves) {
+        return legalMoves.find(move => move.endingPos === kingSquare) !== undefined;
+      }
+    }
+    return false;
+  }
   // check if the king of the player who just made a move is in check -> if yes, that move is illegal
   isKingInCheck(): boolean {
     const isWhite = this.lastMove?.piece.isWhite ?? false;
@@ -56,27 +69,15 @@ export class Board {
       return left || right || top || bottom || topRight || topLeft || bottomRight || bottomLeft;
     }
     return false;
-    // const isWhite = this.lastMove?.piece.isWhite;
-    // const kingSquare = this.squares.find(square => square.occupiedBy instanceof King && square.occupiedBy.isWhite === isWhite);
-    // if(kingSquare) {
-    //   const legalMoves = this.lastMove?.piece.checkLegalMoves(this.squares);
-    //   if(legalMoves) {
-    //     return legalMoves.find(move => move.endingPos === kingSquare) !== undefined;
-    //   }
-    // }
-    // return false;
   }
   private checkDirection(isWhite: boolean, row: number, col: number, horizontal: boolean, right: boolean = false, top: boolean = false): boolean {
     let offset = 0;
-    let condition = false;
     if(horizontal) {
       offset = right ? 1 : -1
-      condition = right ? (col < 8) : (col > 1);
     } else {
       offset = top ? -1 : 1;
-      condition = top ? (row > 1) : (row < 8);
     }
-    while(condition) {
+    while(row >= 1 && row <= 8 && col >= 1 && col <= 8) {
       if(horizontal) {
         row += offset;
       } else {
@@ -93,9 +94,7 @@ export class Board {
   private checkDirectionDiagonally(isWhite: boolean, row: number, col: number, right: boolean, top: boolean): boolean {
     const offsetCol = right ? 1 : -1;
     const offsetRow = top ? -1 : 1;
-    const conditionCol = right ? (col < 8) : (col > 1);
-    const conditionRow = top ? (col > 1) : (col < 8);
-    while(conditionCol && conditionRow) {
+    while(row >= 1 && row <= 8 && col >= 1 && col <= 8) {
       row += offsetRow;
       col += offsetCol;
       const foundSquare = this.findSquare(row, col);

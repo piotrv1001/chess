@@ -18,27 +18,20 @@ export class Rook extends ChessEntity {
   override checkLegalMoves(squares: Square[]): Move[] {
     const currSquare = squares.find(square => square.occupiedBy === this);
     if(currSquare) {
-      const currPos = currSquare.position;
-      const row = currPos.row;
-      const col = currPos.column;
-      const conditionLeft = (row >= 1);
-      const conditionRight = (row <= 8);
-      const conditionBottom = (col >= 1);
-      const conditionTop = (col <= 8);
-      return [...this.addMove(currSquare, squares, conditionLeft, false, true),
-        ...this.addMove(currSquare, squares, conditionRight, true, true),
-        ...this.addMove(currSquare, squares, conditionBottom, false, false),
-        ...this.addMove(currSquare, squares, conditionTop, true, false)
+      return [...this.addMove(currSquare, squares, false, true),
+        ...this.addMove(currSquare, squares, true, true),
+        ...this.addMove(currSquare, squares, false, false),
+        ...this.addMove(currSquare, squares, true, false)
       ]
     }
     return [];
   }
-  addMove(currSquare: Square, squares: Square[], condition: boolean, increment: boolean, isRow: boolean): Move[] {
+  addMove(currSquare: Square, squares: Square[], increment: boolean, isRow: boolean): Move[] {
     const moves: Move[] = [];
     let row = currSquare.position.row;
     let col = currSquare.position.column;
     const multiplier = (increment) ? 1 : -1;
-    while(condition) {
+    while(col >= 1 && col <= 8 && row >= 1 && row <= 8) {
       (isRow) ? row += multiplier : col += multiplier;
       const foundSquare = squares.find(square => square.position.row === row && square.position.column === col);
       const occupiedByEnemy = (foundSquare?.occupiedBy?.isWhite !== currSquare.occupiedBy?.isWhite);
