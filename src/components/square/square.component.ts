@@ -2,6 +2,7 @@ import { SquareService } from './../../app/services/square.service';
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnDestroy, AfterViewInit, OnInit, Renderer2 } from '@angular/core';
 import { Square } from 'src/model/square';
 import { fromEvent, Subscription } from 'rxjs';
+import { Move } from 'src/model/move';
 
 @Component({
   selector: 'app-square',
@@ -16,12 +17,14 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLegalMove: boolean = false;
   isCapture: boolean = false;
+  lastMove?: Move;
   private otherSquareClickSub?: Subscription;
   private legalMoveSub?: Subscription;
   private squareClickSub?: Subscription;
   private squareRightClickSub?: Subscription;
   private squareMouseOverSub?: Subscription;
   private squareMouseOutSub?: Subscription;
+  private lastMoveSub?: Subscription;
 
   constructor(
     private squareService: SquareService,
@@ -39,10 +42,9 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
         const classToRemove = (this.square?.isWhite) ? 'red-white-square' : 'red-dark-square';
         this.renderer.removeClass(this.squareNative, classToRemove);
         // check if we clicked on a different square
-        if(this.square !== clickedSquare) {
+        if(this.square !== clickedSquare && !this.checkIfLastMove()) {
           if(this.square?.occupiedBy != null) {
-            const classToRemove = (this.square?.isWhite) ? 'clicked-white-square' : 'clicked-dark-square';
-            this.renderer.removeClass(this.squareNative, classToRemove);
+            this.removeClickedClass();
           }
         }
     });
@@ -57,6 +59,15 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
           this.isLegalMove = false;
         }
       });
+    this.lastMoveSub = this.squareService.getLastMoveObservable()
+      .subscribe(lastMove => {
+        this.lastMove = lastMove;
+        if(this.checkIfLastMove()) {
+          this.addClickedClass();
+        } else {
+          this.removeClickedClass();
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -64,8 +75,7 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
       const squareClick$ = fromEvent(this.squareNative, 'click');
       this.squareClickSub = squareClick$.subscribe(() => {
         if(this.square?.occupiedBy != null) {
-          const classToAdd = (this.square?.isWhite) ? 'clicked-white-square' : 'clicked-dark-square';
-          this.renderer.addClass(this.squareNative, classToAdd);
+          this.addClickedClass();
         }
         this.squareClick.emit(this.square);
       });
@@ -103,14 +113,29 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
       this.squareMouseOutSub,
       this.otherSquareClickSub,
       this.legalMoveSub,
-      this.squareRightClickSub
+      this.squareRightClickSub,
+      this.lastMoveSub
     )
+  }
+
+  private addClickedClass(): void {
+    const classToAdd = (this.square?.isWhite) ? 'clicked-white-square' : 'clicked-dark-square';
+    this.renderer.addClass(this.squareNative, classToAdd);
+  }
+
+  private removeClickedClass(): void {
+    const classToRemove = (this.square?.isWhite) ? 'clicked-white-square' : 'clicked-dark-square';
+    this.renderer.removeClass(this.squareNative, classToRemove);
   }
 
   private removeSubs(...subs: (Subscription | undefined)[]): void {
     for(const sub of subs) {
       sub?.unsubscribe();
     }
+  }
+
+  private checkIfLastMove(): boolean {
+    return this.lastMove?.startingPos === this.square || this.lastMove?.endingPos === this.square;
   }
 
 }
