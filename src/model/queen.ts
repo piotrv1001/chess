@@ -22,25 +22,14 @@ export class Queen extends ChessEntity {
     if(currSquare && currSquare.occupiedBy) {
       const tempRook = new Rook(currSquare.occupiedBy.isWhite, currSquare.position);
       const tempBishop = new Bishop(currSquare.occupiedBy.isWhite, currSquare.position);
-      const currPos = currSquare.position;
-      const row = currPos.row;
-      const col = currPos.column;
-      const conditionTopLeft = (row >= 1 && col >= 1);
-      const conditionTopRight = (row >= 1 && col <= 8);
-      const conditionBottomLeft = (row <= 8 && col >= 1);
-      const conditionBottomRight = (row <= 8 && col <= 8);
-      const conditionLeft = (row >= 1);
-      const conditionRight = (row <= 8);
-      const conditionBottom = (col >= 1);
-      const conditionTop = (col <= 8);
-      return [...tempBishop.addMove(currSquare, squares, conditionTopLeft, false, false),
-        ...tempBishop.addMove(currSquare, squares, conditionTopRight, false, true),
-        ...tempBishop.addMove(currSquare, squares, conditionBottomLeft, true, false),
-        ...tempBishop.addMove(currSquare, squares, conditionBottomRight, true, true),
-        ...tempRook.addMove(currSquare, squares, conditionLeft, false, true),
-        ...tempRook.addMove(currSquare, squares, conditionRight, true, true),
-        ...tempRook.addMove(currSquare, squares, conditionBottom, false, false),
-        ...tempRook.addMove(currSquare, squares, conditionTop, true, false)
+      return [...tempBishop.addMove(currSquare, squares, false, false),
+        ...tempBishop.addMove(currSquare, squares, false, true),
+        ...tempBishop.addMove(currSquare, squares, true, false),
+        ...tempBishop.addMove(currSquare, squares, true, true),
+        ...tempRook.addMove(currSquare, squares, false, true),
+        ...tempRook.addMove(currSquare, squares, true, true),
+        ...tempRook.addMove(currSquare, squares, false, false),
+        ...tempRook.addMove(currSquare, squares, true, false)
       ]
     }
     return [];

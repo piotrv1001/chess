@@ -19,12 +19,15 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
   private otherSquareClickSub?: Subscription;
   private legalMoveSub?: Subscription;
   private squareClickSub?: Subscription;
+  private squareRightClickSub?: Subscription;
   private squareMouseOverSub?: Subscription;
   private squareMouseOutSub?: Subscription;
 
   constructor(
     private squareService: SquareService,
-    private renderer: Renderer2) {}
+    private renderer: Renderer2) {
+      // window.addEventListener("contextmenu", e => e.preventDefault());
+    }
 
   get squareNative(): any {
     return this.squareImgRef?.nativeElement;
@@ -33,6 +36,8 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.otherSquareClickSub = this.squareService.getSquareClickObservable()
       .subscribe(clickedSquare => {
+        const classToRemove = (this.square?.isWhite) ? 'red-white-square' : 'red-dark-square';
+        this.renderer.removeClass(this.squareNative, classToRemove);
         // check if we clicked on a different square
         if(this.square !== clickedSquare) {
           if(this.square?.occupiedBy != null) {
@@ -64,6 +69,18 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.squareClick.emit(this.square);
       });
+      const squareRickClick$ = fromEvent(this.squareNative, 'contextmenu');
+      this.squareRightClickSub = squareRickClick$.subscribe((event: any) => {
+        event.preventDefault();
+        if(event.button === 2) {
+          const classToToggle = (this.square?.isWhite) ? 'red-white-square' : 'red-dark-square';
+          if(this.squareNative.classList.contains(classToToggle)) {
+            this.renderer.removeClass(this.squareNative, classToToggle);
+          } else {
+            this.renderer.addClass(this.squareNative, classToToggle);
+          }
+        }
+      });
       const squareMouseOver$ = fromEvent(this.squareNative, 'mouseover');
       this.squareMouseOverSub = squareMouseOver$.subscribe(() => {
         if(this.square?.occupiedBy != null) {
@@ -85,7 +102,8 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
       this.squareMouseOverSub,
       this.squareMouseOutSub,
       this.otherSquareClickSub,
-      this.legalMoveSub
+      this.legalMoveSub,
+      this.squareRightClickSub
     )
   }
 

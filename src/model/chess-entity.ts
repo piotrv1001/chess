@@ -28,6 +28,6 @@ export class ChessEntity implements IChessEntity {
   checkIfMoveIsLegal(move: Move, board: Board): boolean {
     const boardCopy = cloneDeep(board);
     boardCopy.makeMove(move);
-    return boardCopy.isKingInCheck();
+    return !boardCopy.isKingInCheck();
   }
 }

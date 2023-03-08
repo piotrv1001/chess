@@ -18,28 +18,21 @@ export class Bishop extends ChessEntity {
   override checkLegalMoves(squares: Square[]): Move[] {
     const currSquare = squares.find(square => square.occupiedBy === this);
     if(currSquare) {
-      const currPos = currSquare.position;
-      const row = currPos.row;
-      const col = currPos.column;
-      const conditionTopLeft = (row >= 1 && col >= 1);
-      const conditionTopRight = (row >= 1 && col <= 8);
-      const conditionBottomLeft = (row <= 8 && col >= 1);
-      const conditionBottomRight = (row <= 8 && col <= 8);
-      return [...this.addMove(currSquare, squares, conditionTopLeft, false, false),
-        ...this.addMove(currSquare, squares, conditionTopRight, false, true),
-        ...this.addMove(currSquare, squares, conditionBottomLeft, true, false),
-        ...this.addMove(currSquare, squares, conditionBottomRight, true, true)
+      return [...this.addMove(currSquare, squares, false, false),
+        ...this.addMove(currSquare, squares, false, true),
+        ...this.addMove(currSquare, squares, true, false),
+        ...this.addMove(currSquare, squares, true, true)
       ]
     }
     return [];
   }
-  addMove(currSquare: Square, squares: Square[], condition: boolean, rowIncrement: boolean, colIncrement: boolean): Move[] {
+  addMove(currSquare: Square, squares: Square[], rowIncrement: boolean, colIncrement: boolean): Move[] {
     const moves: Move[] = [];
     let row = currSquare.position.row;
     let col = currSquare.position.column;
     const rowMultiplier = (rowIncrement) ? 1 : -1;
     const colMultiplier = (colIncrement) ? 1 : -1;
-    while(condition) {
+    while(col >= 1 && col <= 8 && row >= 1 && row <= 8) {
       row += rowMultiplier;
       col += colMultiplier;
       const foundSquare = squares.find(square => square.position.row === row && square.position.column === col);
