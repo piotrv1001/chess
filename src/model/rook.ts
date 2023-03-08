@@ -4,6 +4,7 @@ import { ChessEntity } from './chess-entity';
 import { Square } from './square';
 import { King } from './king';
 import { Board } from './board';
+import { Pinned } from 'src/app/types/pinned';
 
 export class Rook extends ChessEntity {
   constructor(
@@ -36,26 +37,45 @@ export class Rook extends ChessEntity {
     let col = currSquare.position.column;
     const multiplier = (increment) ? 1 : -1;
     const pathToCheck: Square[] = [];
+    const pinPath: Square[] = [];
+    let encounteredPieces = 0;
+    let pinnedPiece: ChessEntity | null = null;
+    let kingFound = false;
     while(col >= 1 && col <= 8 && row >= 1 && row <= 8) {
       (isRow) ? row += multiplier : col += multiplier;
       const foundSquare = squares.find(square => square.position.row === row && square.position.column === col);
       const occupiedByEnemy = (foundSquare?.occupiedBy?.isWhite !== currSquare.occupiedBy?.isWhite);
       if(foundSquare && (foundSquare.occupiedBy == null || occupiedByEnemy)) {
         if(currSquare.occupiedBy) {
-          const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
-          moves.push(move);
-          pathToCheck.push(foundSquare);
+          if(encounteredPieces === 0) {
+            const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
+            moves.push(move);
+            pathToCheck.push(foundSquare);
+          }
+          pinPath.push(foundSquare);
           if(foundSquare.occupiedBy != null && occupiedByEnemy) {
-            if(foundSquare.occupiedBy instanceof King) { // enemy king is in check -> return path to check
-              board.pathToCheck = [currSquare, ...pathToCheck];
-            } else {
+            if(foundSquare.occupiedBy instanceof King) {
+              kingFound = true;
+              if(encounteredPieces === 0) {
+                board.pathToCheck = [currSquare, ...pathToCheck]; // enemy king is in check -> return path to check
+              }
               break;
+            } else {
+              encounteredPieces++;
+              pinnedPiece = foundSquare.occupiedBy;
+              if(encounteredPieces > 1) {
+                break;
+              }
             }
           }
         }
       } else { // we encountered our own piece
         break;
       }
+    }
+    if(kingFound && encounteredPieces === 1 && pinnedPiece) {
+      const pinned: Pinned = { pinnedPath: [currSquare, ...pinPath], pinnedPiece: pinnedPiece };
+      board.pinned.push(pinned);
     }
     return moves;
   }

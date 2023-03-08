@@ -3,10 +3,11 @@ import { Pawn } from './pawn';
 import { King } from './king';
 import { Queen } from './queen';
 import { Bishop } from './bishop';
-import { Position } from 'src/app/types/position';
 import { Knight } from './knight';
 import { Rook } from './rook';
 import { Square } from './square';
+import { Position } from 'src/app/types/position';
+import { Pinned } from 'src/app/types/pinned';
 
 export class Board {
   squares: Square[];
@@ -15,6 +16,7 @@ export class Board {
   enemyMoves: Map<Square, Move[]> = new Map();
   isCheckMate: boolean = false;
   pathToCheck: Square[] = []; // if we are in check we have to know the path to check, so every piece can only move onto that path to block the check
+  pinned: Pinned[] = []; // pinned pieces that can only move in the line of pin
   constructor() {
     this.squares = this.initSquares();
     this.checkIfCheckmate(true);
@@ -35,19 +37,27 @@ export class Board {
       if(square.occupiedBy == null) continue;
       if(square.occupiedBy.isWhite === isWhite) {
         let moves = square.occupiedBy.checkLegalMoves(this);
-        if(this.pathToCheck.length > 0 && !(square.occupiedBy instanceof King)) { // only King can move out of the way
+        // if King -> he can move out of the way, otherwise -> block the check
+        if(this.pathToCheck.length > 0 && !(square.occupiedBy instanceof King)) {
           moves = moves.filter(move => this.pathToCheck.includes(move.endingPos));
         }
         // prevent King from walking into a check
         if(square.occupiedBy instanceof King) {
           moves = moves.filter(move => {
-            for(const [square, enemyMoves] of this.enemyMoves) {
+            for(const [, enemyMoves] of this.enemyMoves) {
               if(enemyMoves.map(enemyMove => enemyMove.endingPos).includes(move.endingPos)) {
                 return false;
               }
             }
             return true;
           })
+        }
+        // handle pinned pieces
+        const pinnedPieceArray = this.pinned.map(pinned => pinned.pinnedPiece);
+        const pinnedPieceIndex = pinnedPieceArray.indexOf(square.occupiedBy);
+        if(pinnedPieceIndex !== -1) {
+          const pinnedPath = this.pinned[pinnedPieceIndex].pinnedPath;
+          moves = moves.filter(move => pinnedPath.includes(move.endingPos));
         }
         this.legalMoves?.set(square, moves);
       }
@@ -61,6 +71,7 @@ export class Board {
       endingPos.occupiedBy = move.piece;
       this.lastMove = move;
     }
+    this.pinned = [];
     this.pathToCheck = [];
     this.legalMoves.clear();
     this.enemyMoves.clear();
