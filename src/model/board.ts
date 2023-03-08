@@ -51,6 +51,9 @@ export class Board {
       endingPos.occupiedBy = move.piece;
       this.lastMove = move;
     }
+    this.pathToCheck = [];
+    this.legalMoves.clear();
+    this.enemyMoves.clear();
     const isWhite = !move.piece.isWhite;
     this.isCheckMate = this.checkIfCheckmate(isWhite);
   }
