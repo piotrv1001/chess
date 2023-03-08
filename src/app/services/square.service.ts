@@ -10,6 +10,7 @@ export class SquareService {
 
   private squareClickSubject: Subject<Square> = new Subject<Square>();
   private legalMoveSubject: Subject<Move[]> = new Subject<Move[]>();
+  private lastMoveSubject: Subject<Move> = new Subject<Move>();
 
   getSquareClickObservable(): Observable<Square> {
     return this.squareClickSubject.asObservable();
@@ -19,12 +20,20 @@ export class SquareService {
     return this.legalMoveSubject.asObservable();
   }
 
+  getLastMoveObservable(): Observable<Move> {
+    return this.lastMoveSubject.asObservable();
+  }
+
   notifyAllSquares(square: Square): void {
     this.squareClickSubject.next(square);
   }
 
   notifyAboutLegalMoves(moves: Move[]): void {
     this.legalMoveSubject.next(moves);
+  }
+
+  notifyAboutLastMove(move: Move): void {
+    this.lastMoveSubject.next(move);
   }
 
 }

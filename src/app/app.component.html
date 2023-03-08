@@ -1,5 +1,10 @@
 <div class="container">
   <div class="chess-board">
-    <app-square *ngFor="let square of board.squares" [square]="square" (squareClick)="onSquareClick($event)" class="square"></app-square>
+    <app-square *ngFor="let square of board.squares"
+      [square]="square"
+      (squareClick)="onSquareClick($event)"
+      class="square"
+      >
+    </app-square>
   </div>
 </div>

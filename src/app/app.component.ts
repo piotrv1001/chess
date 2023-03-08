@@ -46,10 +46,15 @@ export class AppComponent {
 
   private makeMove(move: Move): void {
     this.board.makeMove(move);
+    this.notifyLastMove(move);
     this.moveHistory.push(move);
     this.isWhiteMove = !this.isWhiteMove;
     this.legalMoves = [];
     this.notifyLegalMoves();
+  }
+
+  private notifyLastMove(move: Move): void {
+    this.squareService.notifyAboutLastMove(move);
   }
 
   private notifyLegalMoves(): void {
