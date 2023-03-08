@@ -10,7 +10,6 @@ export interface IChessEntity {
   imgUrl?: string;
   checkLegalMoves(board: Board): Move[];
   makeMove(square: Position): void;
-  checkIfMoveIsLegal(move: Move, board: Board): boolean;
 }
 
 export class ChessEntity implements IChessEntity {
@@ -24,8 +23,5 @@ export class ChessEntity implements IChessEntity {
   }
   makeMove(square: Position): void {
     this.currentPosition = square;
-  }
-  checkIfMoveIsLegal(move: Move, board: Board): boolean {
-    return true;
   }
 }

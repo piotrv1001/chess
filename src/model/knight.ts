@@ -3,6 +3,7 @@ import { Position } from 'src/app/types/position';
 import { ChessEntity } from './chess-entity';
 import { Square } from './square';
 import { Board } from './board';
+import { King } from './king';
 
 export class Knight extends ChessEntity {
   constructor(
@@ -24,7 +25,7 @@ export class Knight extends ChessEntity {
       const row = currPos.row;
       const col = currPos.column;
        return this.addToMoves(
-        currSquare, squares,
+        currSquare, board,
         { row: row + 1, column: col - 2 },
         { row: row + 1, column: col + 2 },
         { row: row + 2, column: col - 1 },
@@ -37,7 +38,8 @@ export class Knight extends ChessEntity {
     }
     return [];
   }
-  private addToMoves(currSquare: Square, squares: Square[], ...positions: Position[]): Move[] {
+  private addToMoves(currSquare: Square, board: Board, ...positions: Position[]): Move[] {
+    const squares = board.squares;
     const moves: Move[] = [];
     for(const pos of positions) {
       if(this.checkBounds(pos.row, pos.column)) {
@@ -46,6 +48,9 @@ export class Knight extends ChessEntity {
           if(currSquare.occupiedBy) {
             const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
             moves.push(move);
+            if(foundSquare.occupiedBy instanceof King) {
+              board.pathToCheck.push(currSquare);
+            }
           }
         }
       }

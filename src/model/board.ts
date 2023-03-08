@@ -14,7 +14,6 @@ export class Board {
   legalMoves: Map<Square, Move[]> = new Map();
   enemyMoves: Map<Square, Move[]> = new Map();
   isCheckMate: boolean = false;
-  squaresAttackedByEnemey: Square[] = []; // to prevent the king from walking into a check
   pathToCheck: Square[] = []; // if we are in check we have to know the path to check, so every piece can only move onto that path to block the check
   constructor() {
     this.squares = this.initSquares();
@@ -36,19 +35,20 @@ export class Board {
       if(square.occupiedBy == null) continue;
       if(square.occupiedBy.isWhite === isWhite) {
         let moves = square.occupiedBy.checkLegalMoves(this);
-        if(this.pathToCheck.length > 0) {
+        if(this.pathToCheck.length > 0 && !(square.occupiedBy instanceof King)) { // only King can move out of the way
           moves = moves.filter(move => this.pathToCheck.includes(move.endingPos));
         }
-        moves = moves.filter(move => {
-          if(move.piece instanceof King) {
-            for(const [square, moves] of this.enemyMoves) {
-              if(moves.map(move => move.endingPos).includes(move.endingPos)) {
+        // prevent King from walking into a check
+        if(square.occupiedBy instanceof King) {
+          moves = moves.filter(move => {
+            for(const [square, enemyMoves] of this.enemyMoves) {
+              if(enemyMoves.map(enemyMove => enemyMove.endingPos).includes(move.endingPos)) {
                 return false;
               }
             }
-          }
-          return true;
-        })
+            return true;
+          })
+        }
         this.legalMoves?.set(square, moves);
       }
     }
@@ -78,59 +78,6 @@ export class Board {
     }
     return false;
   }
-  // isKingInCheck(): boolean {
-  //   const isWhite = this.lastMove?.piece.isWhite ?? false;
-  //   const kingSquare = this.squares.find(square => square.occupiedBy instanceof King && square.occupiedBy.isWhite === isWhite);
-  //   if(kingSquare) {
-  //     let row = kingSquare.position.row;
-  //     let col = kingSquare.position.column;
-  //     const left = this.checkDirection(isWhite, row, col, true, false);
-  //     const right = this.checkDirection(isWhite, row, col, true, true);
-  //     const top = this.checkDirection(isWhite, row, col, false, false, true);
-  //     const bottom = this.checkDirection(isWhite, row, col, false, false, false);
-  //     const topRight = this.checkDirectionDiagonally(isWhite, row, col, true, true);
-  //     const topLeft = this.checkDirectionDiagonally(isWhite, row, col, false, true);
-  //     const bottomRight = this.checkDirectionDiagonally(isWhite, row, col, true, false);
-  //     const bottomLeft = this.checkDirectionDiagonally(isWhite, row, col, false, false);
-  //     return left || right || top || bottom || topRight || topLeft || bottomRight || bottomLeft;
-  //   }
-  //   return false;
-  // }
-  // private checkDirection(isWhite: boolean, row: number, col: number, horizontal: boolean, right: boolean = false, top: boolean = false): boolean {
-  //   let offset = 0;
-  //   if(horizontal) {
-  //     offset = right ? 1 : -1
-  //   } else {
-  //     offset = top ? -1 : 1;
-  //   }
-  //   while(row >= 1 && row <= 8 && col >= 1 && col <= 8) {
-  //     if(horizontal) {
-  //       row += offset;
-  //     } else {
-  //       col += offset;
-  //     }
-  //     const foundSquare = this.findSquare(row, col);
-  //     if(foundSquare && foundSquare.occupiedBy != null) {
-  //       const isEnemy = foundSquare.occupiedBy.isWhite !== isWhite;
-  //       return isEnemy && (foundSquare.occupiedBy instanceof Queen || foundSquare.occupiedBy instanceof Rook);
-  //     }
-  //   }
-  //   return false;
-  // }
-  // private checkDirectionDiagonally(isWhite: boolean, row: number, col: number, right: boolean, top: boolean): boolean {
-  //   const offsetCol = right ? 1 : -1;
-  //   const offsetRow = top ? -1 : 1;
-  //   while(row >= 1 && row <= 8 && col >= 1 && col <= 8) {
-  //     row += offsetRow;
-  //     col += offsetCol;
-  //     const foundSquare = this.findSquare(row, col);
-  //     if(foundSquare && foundSquare.occupiedBy != null) {
-  //       const isEnemy = foundSquare.occupiedBy.isWhite !== isWhite;
-  //       return isEnemy && (foundSquare.occupiedBy instanceof Queen || foundSquare.occupiedBy instanceof Bishop);
-  //     }
-  //   }
-  //   return false;
-  // }
   private findSquare(row: number, col: number): Square | undefined {
     return this.squares.find(square => square.position.row === row && square.position.column === col);
   }
