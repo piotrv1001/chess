@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { CheckmateDialog } from './../components/checkmate-dialog/checkmate-dialog.component';
 import { Move } from './../model/move';
 import { SquareService } from './services/square.service';
@@ -15,13 +16,15 @@ import { MatDialog } from '@angular/material/dialog';
 export class AppComponent {
   board: Board;
   isWhiteMove: boolean = true;
-  moveHistory: Move[] = [];
   legalMoves: Move[] = [];
+  boardVersionHistory: Board[] = [];
+  currentBoardVersion = -1; // index in the boardVersionHistory array
 
   constructor(
     private squareService: SquareService,
     public dialog: MatDialog) {
     this.board = new Board();
+    this.updateBoardVersionHistory();
   }
 
   onSquareClick(square: Square): void {
@@ -42,6 +45,22 @@ export class AppComponent {
   resetBoard(): void {
     this.board = new Board();
     this.isWhiteMove = true;
+    this.boardVersionHistory = [];
+    this.updateBoardVersionHistory();
+  }
+
+  goBack(): void {
+    if(this.currentBoardVersion > 0) {
+      this.currentBoardVersion--;
+      this.board = this.boardVersionHistory[this.currentBoardVersion];
+    }
+  }
+
+  goForward(): void {
+    if(this.currentBoardVersion < this.boardVersionHistory.length - 1) {
+      this.currentBoardVersion++;
+      this.board = this.boardVersionHistory[this.currentBoardVersion];
+    }
   }
 
   private showLegalMoves(square: Square): void {
@@ -51,8 +70,8 @@ export class AppComponent {
 
   private makeMove(move: Move): void {
     this.board.makeMove(move);
+    this.updateBoardVersionHistory();
     this.notifyLastMove(move);
-    this.moveHistory.push(move);
     this.isWhiteMove = !this.isWhiteMove;
     this.legalMoves = [];
     this.notifyLegalMoves();
@@ -70,5 +89,11 @@ export class AppComponent {
     this.dialog.open(CheckmateDialog, {
       data: { gameResult: this.board.gameResult }
     });
+  }
+
+  private updateBoardVersionHistory(): void {
+    const boardClone = cloneDeep(this.board);
+    this.boardVersionHistory.push(boardClone);
+    this.currentBoardVersion++;
   }
 }
