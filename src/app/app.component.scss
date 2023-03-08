@@ -20,6 +20,33 @@
   grid-template-columns: repeat(8, 1fr);
 }
 
+.next-move-info {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 2.5vw;
+  left: 2.5vw;
+  font-size: 1.5rem;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.next-move-line {
+  width: 1px;
+  height: 2.5rem;
+  background-color: rgb(60, 60, 60);
+  margin: 0 1em;
+}
+
+.next-move-circle {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: none;
+  transition: .5s;
+}
+
 .square:nth-child(1) {
   border-top-left-radius: 0.3125rem;
 }
