@@ -18,19 +18,19 @@ export class Bishop extends ChessEntity {
       this.imgUrl = '/assets/images/black-bishop.png';
     }
   }
-  override checkLegalMoves(board: Board): Move[] {
+  override checkLegalMoves(board: Board, enemyMoves: boolean = false): Move[] {
     const squares = board.squares;
     const currSquare = squares.find(square => square.occupiedBy === this);
     if(currSquare) {
-      return [...this.addMove(currSquare, board, false, false),
-        ...this.addMove(currSquare, board, false, true),
-        ...this.addMove(currSquare, board, true, false),
-        ...this.addMove(currSquare, board, true, true)
+      return [...this.addMove(currSquare, board, false, false, enemyMoves),
+        ...this.addMove(currSquare, board, false, true, enemyMoves),
+        ...this.addMove(currSquare, board, true, false, enemyMoves),
+        ...this.addMove(currSquare, board, true, true, enemyMoves)
       ]
     }
     return [];
   }
-  addMove(currSquare: Square, board: Board, rowIncrement: boolean, colIncrement: boolean): Move[] {
+  addMove(currSquare: Square, board: Board, rowIncrement: boolean, colIncrement: boolean, enemyMoves: boolean): Move[] {
     const squares = board.squares;
     const moves: Move[] = [];
     let row = currSquare.position.row;
@@ -72,6 +72,10 @@ export class Bishop extends ChessEntity {
           }
         }
       } else { // we encountered our own piece
+        if(enemyMoves && foundSquare && currSquare.occupiedBy) {
+          const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
+          moves.push(move);
+        }
         break;
       }
     }
