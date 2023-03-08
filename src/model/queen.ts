@@ -1,3 +1,4 @@
+import { Board } from './board';
 import { Bishop } from './bishop';
 import { Move } from './move';
 import { Position } from 'src/app/types/position';
@@ -17,19 +18,20 @@ export class Queen extends ChessEntity {
       this.imgUrl = '/assets/images/black-queen.png';
     }
   }
-  override checkLegalMoves(squares: Square[]): Move[] {
+  override checkLegalMoves(board: Board): Move[] {
+    const squares = board.squares;
     const currSquare = squares.find(square => square.occupiedBy === this);
     if(currSquare && currSquare.occupiedBy) {
       const tempRook = new Rook(currSquare.occupiedBy.isWhite, currSquare.position);
       const tempBishop = new Bishop(currSquare.occupiedBy.isWhite, currSquare.position);
-      return [...tempBishop.addMove(currSquare, squares, false, false),
-        ...tempBishop.addMove(currSquare, squares, false, true),
-        ...tempBishop.addMove(currSquare, squares, true, false),
-        ...tempBishop.addMove(currSquare, squares, true, true),
-        ...tempRook.addMove(currSquare, squares, false, true),
-        ...tempRook.addMove(currSquare, squares, true, true),
-        ...tempRook.addMove(currSquare, squares, false, false),
-        ...tempRook.addMove(currSquare, squares, true, false)
+      return [...tempBishop.addMove(currSquare, board, false, false),
+        ...tempBishop.addMove(currSquare, board, false, true),
+        ...tempBishop.addMove(currSquare, board, true, false),
+        ...tempBishop.addMove(currSquare, board, true, true),
+        ...tempRook.addMove(currSquare, board, false, true),
+        ...tempRook.addMove(currSquare, board, true, true),
+        ...tempRook.addMove(currSquare, board, false, false),
+        ...tempRook.addMove(currSquare, board, true, false)
       ]
     }
     return [];

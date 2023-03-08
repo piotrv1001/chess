@@ -8,7 +8,7 @@ export interface IChessEntity {
   isWhite: boolean;
   currentPosition: Position;
   imgUrl?: string;
-  checkLegalMoves(squares: Square[]): Move[];
+  checkLegalMoves(board: Board): Move[];
   makeMove(square: Position): void;
   checkIfMoveIsLegal(move: Move, board: Board): boolean;
 }
@@ -19,15 +19,13 @@ export class ChessEntity implements IChessEntity {
     public currentPosition: Position,
     public imgUrl?: string
   ) {}
-  checkLegalMoves(squares: Square[]): Move[] {
+  checkLegalMoves(board: Board): Move[] {
     return [];
   }
   makeMove(square: Position): void {
     this.currentPosition = square;
   }
   checkIfMoveIsLegal(move: Move, board: Board): boolean {
-    const boardCopy = cloneDeep(board);
-    boardCopy.makeMove(move);
-    return !boardCopy.isKingInCheck();
+    return true;
   }
 }

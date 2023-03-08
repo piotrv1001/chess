@@ -2,6 +2,8 @@ import { Move } from './move';
 import { Position } from 'src/app/types/position';
 import { ChessEntity } from './chess-entity';
 import { Square } from './square';
+import { King } from './king';
+import { Board } from './board';
 
 export class Rook extends ChessEntity {
   constructor(
@@ -15,22 +17,25 @@ export class Rook extends ChessEntity {
       this.imgUrl = '/assets/images/black-rook.png';
     }
   }
-  override checkLegalMoves(squares: Square[]): Move[] {
+  override checkLegalMoves(board: Board): Move[] {
+    const squares = board.squares;
     const currSquare = squares.find(square => square.occupiedBy === this);
     if(currSquare) {
-      return [...this.addMove(currSquare, squares, false, true),
-        ...this.addMove(currSquare, squares, true, true),
-        ...this.addMove(currSquare, squares, false, false),
-        ...this.addMove(currSquare, squares, true, false)
+      return [...this.addMove(currSquare, board, false, true),
+        ...this.addMove(currSquare, board, true, true),
+        ...this.addMove(currSquare, board, false, false),
+        ...this.addMove(currSquare, board, true, false)
       ]
     }
     return [];
   }
-  addMove(currSquare: Square, squares: Square[], increment: boolean, isRow: boolean): Move[] {
+  addMove(currSquare: Square, board: Board, increment: boolean, isRow: boolean): Move[] {
+    const squares = board.squares;
     const moves: Move[] = [];
     let row = currSquare.position.row;
     let col = currSquare.position.column;
     const multiplier = (increment) ? 1 : -1;
+    const pathToCheck: Square[] = [];
     while(col >= 1 && col <= 8 && row >= 1 && row <= 8) {
       (isRow) ? row += multiplier : col += multiplier;
       const foundSquare = squares.find(square => square.position.row === row && square.position.column === col);
@@ -39,11 +44,16 @@ export class Rook extends ChessEntity {
         if(currSquare.occupiedBy) {
           const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
           moves.push(move);
+          pathToCheck.push(foundSquare);
           if(foundSquare.occupiedBy != null && occupiedByEnemy) {
-            break;
+            if(foundSquare.occupiedBy instanceof King) { // enemy king is in check -> return path to check
+              board.pathToCheck = [currSquare, ...pathToCheck];
+            } else {
+              break;
+            }
           }
         }
-      } else {
+      } else { // we encountered our own piece
         break;
       }
     }
