@@ -39,6 +39,11 @@ export class AppComponent {
     }
   }
 
+  resetBoard(): void {
+    this.board = new Board();
+    this.isWhiteMove = true;
+  }
+
   private showLegalMoves(square: Square): void {
     this.legalMoves = this.board.legalMoves.get(square) ?? [];
     this.notifyLegalMoves();

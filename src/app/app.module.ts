@@ -8,6 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 import { CheckmateDialog } from 'src/components/checkmate-dialog/checkmate-dialog.component';
 
 @NgModule({
@@ -21,7 +23,8 @@ import { CheckmateDialog } from 'src/components/checkmate-dialog/checkmate-dialo
     AppRoutingModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

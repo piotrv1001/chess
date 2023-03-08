@@ -20,16 +20,35 @@
   grid-template-columns: repeat(8, 1fr);
 }
 
+.controls {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  margin-top: 2.5rem;
+  margin-right: 1rem;
+}
+
 .next-move-info {
   display: flex;
   align-items: center;
-  position: absolute;
-  top: 2.5vw;
-  left: 2.5vw;
   font-size: 1.5rem;
   padding: 0.5em 1em;
   border-radius: 0.5em;
   background-color: rgba(255, 255, 255, 0.3);
+  margin-right: 0.5em;
+}
+
+.reset-btn {
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 1rem;
+  margin-right: 0.5em;
+  border: none;
+  border-radius: 0.5em;
+  color: white;
+}
+
+.reset-btn:hover {
+  cursor: pointer;
 }
 
 .next-move-line {
