@@ -1,0 +1,12 @@
+.piece-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.piece-card:hover {
+  cursor: pointer;
+  background-color: #d3d3d3;
+}

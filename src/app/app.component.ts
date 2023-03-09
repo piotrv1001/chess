@@ -1,3 +1,4 @@
+import { PawnPromotionDialogComponent } from './../components/pawn-promotion-dialog/pawn-promotion-dialog.component';
 import { cloneDeep } from 'lodash';
 import { CheckmateDialog } from './../components/checkmate-dialog/checkmate-dialog.component';
 import { Move } from './../model/move';
@@ -7,6 +8,7 @@ import { Component } from '@angular/core';
 import { Square } from 'src/model/square';
 
 import { MatDialog } from '@angular/material/dialog';
+import { Piece } from './types/piece';
 
 @Component({
   selector: 'app-root',
@@ -104,5 +106,14 @@ export class AppComponent {
     const boardClone = cloneDeep(this.board);
     this.boardVersionHistory.push(boardClone);
     this.currentBoardVersion++;
+  }
+
+  openPawnPromotionDialog(): void {
+    const dialogRef = this.dialog.open(PawnPromotionDialogComponent, {
+      width: '30%'
+    });
+    dialogRef.afterClosed().subscribe((piece: Piece) => {
+      console.log('piece', piece);
+    });
   }
 }
