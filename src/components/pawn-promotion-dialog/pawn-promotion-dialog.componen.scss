@@ -6,7 +6,24 @@
   margin: 1rem 0;
 }
 
+.piece-card:nth-child(1) {
+  margin-top: 0;
+}
+
+.piece-card:nth-child(4) {
+  margin-bottom: 0;
+}
+
 .piece-card:hover {
   cursor: pointer;
   background-color: #d3d3d3;
+}
+
+.piece-img {
+  width: 60px;
+  height: 60px;
+}
+
+.dialog-title {
+  font-size: 2rem;
 }

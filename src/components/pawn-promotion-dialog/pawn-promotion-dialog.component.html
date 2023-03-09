@@ -1,8 +1,8 @@
-<h1 mat-dialog-title style="font-size: 2rem;">Choose piece</h1>
+<h1 mat-dialog-title class="dialog-title">Choose piece</h1>
 <div mat-dialog-content>
-  <mat-card *ngFor="let pieceInfo of pieces" class="piece-card">
-    <mat-card-content (click)="pieceSelected(pieceInfo.piece)">
-      <img [src]="pieceInfo.imgUrl" [alt]="pieceInfo.name" style="width: 60px; height: 60px;">
+  <mat-card *ngFor="let pieceInfo of pieces" class="piece-card" (click)="pieceSelected(pieceInfo.piece)">
+    <mat-card-content>
+      <img [src]="pieceInfo.imgUrl" [alt]="pieceInfo.name" class="piece-img">
       <div>{{ pieceInfo.name }}</div>
     </mat-card-content>
   </mat-card>

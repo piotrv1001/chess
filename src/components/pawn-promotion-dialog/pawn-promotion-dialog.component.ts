@@ -1,6 +1,6 @@
 import { Piece } from './../../app/types/piece';
-import { Component, Output, EventEmitter, Input } from "@angular/core";
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface PieceInfo {
   name: string
@@ -17,15 +17,14 @@ export class PawnPromotionDialogComponent {
 
   pieces: PieceInfo[] = [];
 
-  @Input() isWhite?: boolean;
-  @Output() pieceSelect: EventEmitter<Piece> = new EventEmitter<Piece>();
-
-  constructor(public dialogRef: MatDialogRef<PawnPromotionDialogComponent>) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { isWhite: boolean },
+    public dialogRef: MatDialogRef<PawnPromotionDialogComponent>) {
     this.pieces = [
-      { name: 'Queen', piece: Piece.QUEEN, imgUrl: this.isWhite ? '/assets/images/white-queen.png' : '/assets/images/black-queen.png' },
-      { name: 'Rook', piece: Piece.ROOK, imgUrl: this.isWhite ? '/assets/images/white-rook.png' : '/assets/images/black-rook.png' },
-      { name: 'Bishop', piece: Piece.BISHOP, imgUrl: this.isWhite ? '/assets/images/white-bishop.png' : '/assets/images/black-rook.png' },
-      { name: 'Knight', piece: Piece.KNIGHT, imgUrl: this.isWhite ? '/assets/images/white-knight.png' : '/assets/images/black-knight.png' },
+      { name: 'Queen', piece: Piece.QUEEN, imgUrl: this.data.isWhite ? '/assets/images/white-queen.png' : '/assets/images/black-queen.png' },
+      { name: 'Rook', piece: Piece.ROOK, imgUrl: this.data.isWhite ? '/assets/images/white-rook.png' : '/assets/images/black-rook.png' },
+      { name: 'Bishop', piece: Piece.BISHOP, imgUrl: this.data.isWhite ? '/assets/images/white-bishop.png' : '/assets/images/black-bishop.png' },
+      { name: 'Knight', piece: Piece.KNIGHT, imgUrl: this.data.isWhite ? '/assets/images/white-knight.png' : '/assets/images/black-knight.png' },
     ];
   }
 

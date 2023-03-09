@@ -1,3 +1,5 @@
+import { Knight } from './../model/knight';
+import { Bishop } from './../model/bishop';
 import { PawnPromotionDialogComponent } from './../components/pawn-promotion-dialog/pawn-promotion-dialog.component';
 import { cloneDeep } from 'lodash';
 import { CheckmateDialog } from './../components/checkmate-dialog/checkmate-dialog.component';
@@ -9,6 +11,8 @@ import { Square } from 'src/model/square';
 
 import { MatDialog } from '@angular/material/dialog';
 import { Piece } from './types/piece';
+import { Queen } from 'src/model/queen';
+import { Rook } from 'src/model/rook';
 
 @Component({
   selector: 'app-root',
@@ -86,6 +90,11 @@ export class AppComponent {
     this.isWhiteMove = !this.isWhiteMove;
     this.legalMoves = [];
     this.notifyLegalMoves();
+    if(this.board.checkPawnPromotion()) {
+      const isWhite = !this.isWhiteMove
+      this.openPawnPromotionDialog(isWhite);
+      this.board.checkIfCheckmate(isWhite);
+    }
   }
 
   private notifyLastMove(move: Move): void {
@@ -108,12 +117,35 @@ export class AppComponent {
     this.currentBoardVersion++;
   }
 
-  openPawnPromotionDialog(): void {
+  private openPawnPromotionDialog(isWhite: boolean): void {
     const dialogRef = this.dialog.open(PawnPromotionDialogComponent, {
-      width: '30%'
+      width: '30%',
+      data: { isWhite: isWhite }
     });
     dialogRef.afterClosed().subscribe((piece: Piece) => {
-      console.log('piece', piece);
+      const isWhite = this.board.lastMove?.piece.isWhite ?? false;
+      const square = this.board.lastMove?.endingPos;
+      const pos = square?.position;
+      if(square && pos) {
+        switch(piece) {
+          case Piece.QUEEN:
+            const queen = new Queen(isWhite, pos);
+            square.occupiedBy = queen;
+            break;
+          case Piece.ROOK:
+            const rook = new Rook(isWhite, pos);
+            square.occupiedBy = rook;
+            break;
+          case Piece.BISHOP:
+            const bishop = new Bishop(isWhite, pos);
+            square.occupiedBy = bishop;
+            break;
+          case Piece.KNIGHT:
+          const knight = new Knight(isWhite, pos);
+          square.occupiedBy = knight;
+          break;
+        }
+      }
     });
   }
 }
