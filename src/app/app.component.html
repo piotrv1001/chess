@@ -5,10 +5,10 @@
       <div class="next-move-line"></div>
       <div class="next-move-circle" [ngStyle]="{'background-color': this.isWhiteMove ? 'white' : 'black'}"></div>
     </div>
-    <button (click)="resetBoard()" class="reset-btn"><mat-icon>refresh</mat-icon></button>
-    <button (click)="goBack()" class="reset-btn"><mat-icon>arrow_back</mat-icon></button>
-    <button (click)="goForward()" class="reset-btn"><mat-icon>arrow_forward</mat-icon></button>
-    <button (click)="flipBoard()" class="reset-btn"><mat-icon>swap_vert</mat-icon></button>
+    <button (click)="resetBoard()" class="reset-btn" matTooltip="Reset"><mat-icon>refresh</mat-icon></button>
+    <button (click)="goBack()" class="reset-btn" matTooltip="Go back"><mat-icon>arrow_back</mat-icon></button>
+    <button (click)="goForward()" class="reset-btn" matTooltip="Go forward"><mat-icon>arrow_forward</mat-icon></button>
+    <button (click)="flipBoard()" class="reset-btn" matTooltip="Flip board"><mat-icon>swap_vert</mat-icon></button>
   </div>
   <div class="chess-board">
     <app-square *ngFor="let square of squares"
