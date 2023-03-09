@@ -4,7 +4,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-checkmate-dialog',
-  templateUrl: './checkmate-dialog.component.html'
+  templateUrl: './checkmate-dialog.component.html',
+  styleUrls: ['./checkmate-dialog.component.scss']
 })
 export class CheckmateDialog {
   message?: string;
