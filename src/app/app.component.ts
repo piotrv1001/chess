@@ -1,3 +1,4 @@
+import { ChessEntity } from './../model/chess-entity';
 import { Knight } from './../model/knight';
 import { Bishop } from './../model/bishop';
 import { PawnPromotionDialogComponent } from './../components/pawn-promotion-dialog/pawn-promotion-dialog.component';
@@ -83,17 +84,18 @@ export class AppComponent {
     this.notifyLegalMoves();
   }
 
-  private makeMove(move: Move): void {
+  private makeMove(move: Move, flip: boolean = false): void {
     this.board.makeMove(move);
     this.updateBoardVersionHistory();
     this.notifyLastMove(move);
-    this.isWhiteMove = !this.isWhiteMove;
+    if(!flip) {
+      this.isWhiteMove = !this.isWhiteMove;
+    }
     this.legalMoves = [];
     this.notifyLegalMoves();
     if(this.board.checkPawnPromotion()) {
       const isWhite = !this.isWhiteMove
       this.openPawnPromotionDialog(isWhite);
-      this.board.checkIfCheckmate(isWhite);
     }
   }
 
@@ -126,24 +128,35 @@ export class AppComponent {
       const isWhite = this.board.lastMove?.piece.isWhite ?? false;
       const square = this.board.lastMove?.endingPos;
       const pos = square?.position;
-      if(square && pos) {
+      const startingPos = this.board.lastMove?.startingPos;
+      let lastPiece: ChessEntity | null = null;
+      if(square && pos && startingPos) {
         switch(piece) {
           case Piece.QUEEN:
             const queen = new Queen(isWhite, pos);
             square.occupiedBy = queen;
+            lastPiece = queen;
             break;
           case Piece.ROOK:
             const rook = new Rook(isWhite, pos);
             square.occupiedBy = rook;
+            lastPiece = rook;
             break;
           case Piece.BISHOP:
             const bishop = new Bishop(isWhite, pos);
             square.occupiedBy = bishop;
+            lastPiece = bishop;
             break;
           case Piece.KNIGHT:
           const knight = new Knight(isWhite, pos);
           square.occupiedBy = knight;
+          lastPiece = knight;
           break;
+        }
+        const newMove = new Move(startingPos, square, lastPiece);
+        this.makeMove(newMove, true);
+        if(this.board.isCheckMate) {
+          this.openCheckmateDialog();
         }
       }
     });

@@ -16,7 +16,7 @@ export class Pawn extends ChessEntity {
       this.imgUrl = '/assets/images/black-pawn.png';
     }
   }
-  override checkLegalMoves(board: Board): Move[] {
+  override checkLegalMoves(board: Board, enemyMoves: boolean = false): Move[] {
     const squares = board.squares;
     const moves: Move[] = [];
     const currSquare = squares.find(square => square.occupiedBy === this);
@@ -42,6 +42,18 @@ export class Pawn extends ChessEntity {
         if(captureRight) {
           moves.push(captureRight);
         }
+        if(enemyMoves) {
+          const leftSquare = squares.find(square => square.position.row === leftPos.row && square.position.column === leftPos.column);
+          const rightSquare = squares.find(square => square.position.row === rightPos.row && square.position.column === rightPos.column);
+          if(leftSquare) {
+            const moveLeft = new Move(currSquare, leftSquare, this);
+            moves.push(moveLeft);
+          }
+          if(rightSquare) {
+            const moveRight = new Move(currSquare, rightSquare, this);
+            moves.push(moveRight);
+          }
+        }
         // handle moving up/down by 2 squares
         if(currPos.row === upperLimit) {
           const pos = { row: currPos.row + 2 * multiplier, column: currPos.column };
@@ -56,7 +68,8 @@ export class Pawn extends ChessEntity {
   }
   private addMove(pos: Position, squares: Square[], currSquare: Square, isCapture: boolean = false): Move | null {
     const foundSquare = squares.find(square => square.position.row === pos.row && square.position.column === pos.column);
-    if(foundSquare && ((foundSquare.occupiedBy == null && !isCapture) || (foundSquare.occupiedBy != null && isCapture && foundSquare.occupiedBy.isWhite !== currSquare.occupiedBy?.isWhite))) {
+    if(foundSquare && ((foundSquare.occupiedBy == null && !isCapture) ||
+     (foundSquare.occupiedBy != null && isCapture && foundSquare.occupiedBy.isWhite !== currSquare.occupiedBy?.isWhite))) {
       return new Move(currSquare, foundSquare, this);
     }
     return null;

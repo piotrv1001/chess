@@ -23,7 +23,15 @@ export class Board {
     this.squares = this.initSquares();
     this.checkIfCheckmate(true);
   }
-  private checkIfCheckmate(isWhite: boolean): boolean {
+  checkPawnPromotion(): boolean {
+    const isWhite = this.lastMove?.piece.isWhite ?? false;
+    if(this.lastMove?.piece instanceof Pawn) {
+      const lastRow = this.lastMove.endingPos.position.row
+      return (isWhite && lastRow === 1) || (!isWhite && lastRow === 8)
+    }
+    return false
+  }
+  checkIfCheckmate(isWhite: boolean): boolean {
     this.calculateLegalMoves(isWhite);
     for(const [, moves] of this.legalMoves) {
       if(moves.length > 0) {

@@ -59,7 +59,9 @@ export class Rook extends ChessEntity {
               if(encounteredPieces === 0) {
                 board.pathToCheck = [currSquare, ...pathToCheck]; // enemy king is in check -> return path to check
               }
-              break;
+              if(!enemyMoves) {
+                break;
+              }
             } else {
               encounteredPieces++;
               pinnedPiece = foundSquare.occupiedBy;

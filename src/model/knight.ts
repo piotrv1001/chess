@@ -17,7 +17,7 @@ export class Knight extends ChessEntity {
       this.imgUrl = '/assets/images/black-knight.png';
     }
   }
-  override checkLegalMoves(board: Board): Move[] {
+  override checkLegalMoves(board: Board, enemyMoves: boolean = false): Move[] {
     const squares = board.squares;
     const currSquare = squares.find(square => square.occupiedBy === this);
     if(currSquare) {
@@ -25,7 +25,7 @@ export class Knight extends ChessEntity {
       const row = currPos.row;
       const col = currPos.column;
        return this.addToMoves(
-        currSquare, board,
+        currSquare, board, enemyMoves,
         { row: row + 1, column: col - 2 },
         { row: row + 1, column: col + 2 },
         { row: row + 2, column: col - 1 },
@@ -38,7 +38,7 @@ export class Knight extends ChessEntity {
     }
     return [];
   }
-  private addToMoves(currSquare: Square, board: Board, ...positions: Position[]): Move[] {
+  private addToMoves(currSquare: Square, board: Board, enemyMoves: boolean, ...positions: Position[]): Move[] {
     const squares = board.squares;
     const moves: Move[] = [];
     for(const pos of positions) {
