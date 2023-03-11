@@ -81,12 +81,14 @@ export class AppComponent {
 
   private updateBoard(): void {
     this.board = this.boardVersionHistory[this.currentBoardVersion];
-    this.isWhiteMove = !this.isWhiteMove;
-    this.board.calculateLegalMoves(this.isWhiteMove);
-    const lastMove = this.board.lastMove;
-    if(lastMove) {
-      this.notifyLastMove(lastMove);
-    }
+    setTimeout(() => {
+      this.isWhiteMove = !this.isWhiteMove;
+      this.board.calculateLegalMoves(this.isWhiteMove);
+      const lastMove = this.board.lastMove;
+      if(lastMove) {
+        this.notifyLastMove(lastMove);
+      }
+    }, 0);
   }
 
   private showLegalMoves(square: Square): void {
