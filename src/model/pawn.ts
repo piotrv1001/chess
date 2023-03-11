@@ -1,3 +1,4 @@
+import { EnPassant } from './en-passant';
 import { Board } from './board';
 import { Move } from './move';
 import { Position } from 'src/app/types/position';
@@ -5,11 +6,13 @@ import { ChessEntity } from './chess-entity';
 import { Square } from './square';
 
 export class Pawn extends ChessEntity {
+  moveCounter: number;
   constructor(
     isWhite: boolean,
     currentPosition: Position
   ) {
     super(isWhite, currentPosition);
+    this.moveCounter = 0;
     if(isWhite) {
       this.imgUrl = '/assets/images/white-pawn.png';
     } else {
@@ -61,6 +64,23 @@ export class Pawn extends ChessEntity {
           if(move) {
             moves.push(move);
           }
+        }
+        // handle en passant
+        const left = { row: currPos.row, column: currPos.column - 1 };
+        const squareLeft = squares.find(square => square.position.row === left.row && square.position.column === left.column);
+        const destinationLeft = squares.find(square => square.position.row === left.row + 1 * multiplier && square.position.column === left.column);
+        const squareLeftPiece = squareLeft?.occupiedBy;
+        if(squareLeft && destinationLeft && squareLeftPiece instanceof Pawn && squareLeftPiece.isWhite !== this.isWhite && squareLeftPiece.moveCounter === 1) {
+          const move = new EnPassant(currSquare, destinationLeft, this);
+          moves.push(move);
+        }
+        const right = { row: currPos.row, column: currPos.column + 1 };
+        const squareRight = squares.find(square => square.position.row === right.row && square.position.column === right.column);
+        const destinationRight = squares.find(square => square.position.row === right.row + 1 * multiplier && square.position.column === right.column);
+        const squareRightPiece = squareRight?.occupiedBy;
+        if(squareRight && destinationRight && squareRightPiece instanceof Pawn && squareRightPiece.isWhite !== this.isWhite && squareRightPiece.moveCounter === 1) {
+          const move = new EnPassant(currSquare, destinationRight, this);
+          moves.push(move);
         }
       }
     }

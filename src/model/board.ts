@@ -1,3 +1,4 @@
+import { EnPassant } from './en-passant';
 import { Castles } from './castles';
 import { GameResult } from './../app/types/game-result';
 import { Move } from './move';
@@ -107,6 +108,9 @@ export class Board {
     const endingPos = this.squares.find(square => square.position === move.endingPos.position);
     if(startingPos && endingPos) {
       move.piece.hasAlreadyMoved = true;
+      if(move.piece instanceof Pawn) {
+        move.piece.moveCounter++;
+      }
       startingPos.occupiedBy = null;
       endingPos.occupiedBy = move.piece;
       this.lastMove = move;
@@ -128,6 +132,12 @@ export class Board {
           const rook = rookSquare.occupiedBy;
           rookDestination.occupiedBy = rook;
           rookSquare.occupiedBy = null;
+        }
+      } else if(move instanceof EnPassant) {
+        const multiplier = (move.piece.isWhite) ? 1 : -1;
+        const squareBefore = this.squares.find(square => square.position.row === move.endingPos.position.row + 1 * multiplier && square.position.column === move.endingPos.position.column);
+        if(squareBefore) {
+          squareBefore.occupiedBy = null;
         }
       }
     }
