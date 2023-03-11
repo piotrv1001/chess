@@ -2,7 +2,7 @@ import { ChessEntity } from './../model/chess-entity';
 import { Knight } from './../model/knight';
 import { Bishop } from './../model/bishop';
 import { PawnPromotionDialogComponent } from './../components/pawn-promotion-dialog/pawn-promotion-dialog.component';
-import { cloneDeep } from 'lodash';
+import { cloneDeep  } from 'lodash';
 import { CheckmateDialog } from './../components/checkmate-dialog/checkmate-dialog.component';
 import { Move } from './../model/move';
 import { SquareService } from './services/square.service';
@@ -68,14 +68,24 @@ export class AppComponent {
   goBack(): void {
     if(this.currentBoardVersion > 0) {
       this.currentBoardVersion--;
-      this.board = this.boardVersionHistory[this.currentBoardVersion];
+      this.updateBoard();
     }
   }
 
   goForward(): void {
     if(this.currentBoardVersion < this.boardVersionHistory.length - 1) {
       this.currentBoardVersion++;
-      this.board = this.boardVersionHistory[this.currentBoardVersion];
+      this.updateBoard();
+    }
+  }
+
+  private updateBoard(): void {
+    this.board = this.boardVersionHistory[this.currentBoardVersion];
+    this.isWhiteMove = !this.isWhiteMove;
+    this.board.calculateLegalMoves(this.isWhiteMove);
+    const lastMove = this.board.lastMove;
+    if(lastMove) {
+      this.notifyLastMove(lastMove);
     }
   }
 
@@ -122,6 +132,7 @@ export class AppComponent {
   private openPawnPromotionDialog(isWhite: boolean): void {
     const dialogRef = this.dialog.open(PawnPromotionDialogComponent, {
       width: '30%',
+      disableClose: true,
       data: { isWhite: isWhite }
     });
     dialogRef.afterClosed().subscribe((piece: Piece) => {

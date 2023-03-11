@@ -42,7 +42,7 @@ export class Board {
     }
     return true;
   }
-  private calculateLegalMoves(isWhite: boolean): void {
+  calculateLegalMoves(isWhite: boolean): void {
     for(const square of this.squares) {
       if(square.occupiedBy == null) continue;
       else if(square.occupiedBy.isWhite !== isWhite) {
