@@ -28,9 +28,7 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private squareService: SquareService,
-    private renderer: Renderer2) {
-      // window.addEventListener("contextmenu", e => e.preventDefault());
-    }
+    private renderer: Renderer2) {}
 
   get squareNative(): any {
     return this.squareImgRef?.nativeElement;
@@ -135,7 +133,14 @@ export class SquareComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private checkIfLastMove(): boolean {
-    return this.lastMove?.startingPos === this.square || this.lastMove?.endingPos === this.square;
+    const startingRow = this.lastMove?.startingPos.position.row;
+    const startingCol = this.lastMove?.startingPos.position.column;
+    const endingRow = this.lastMove?.endingPos.position.row;
+    const endingCol = this.lastMove?.endingPos.position.column;
+    const row = this.square?.position.row;
+    const col = this.square?.position.column;
+    return (startingRow === row && startingCol === col) || (endingRow === row && endingCol === col);
+    // return this.lastMove?.startingPos === this.square || this.lastMove?.endingPos === this.square;
   }
 
 }
