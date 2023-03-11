@@ -1,27 +1,44 @@
-# Src
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.5.
+# Angular Chess
 
-## Development server
+This project is a single player version of the classic game of chess built in Angular, Typescript, HTML and CSS.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+## Screenshots
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+![App Screenshot](src/assets/images/chess_ss_1.png)
+<!-- <img src="src/assets/images/chess_ss_1.png" width=500> -->
+    
+## Run Locally
 
-## Build
+Clone the project
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+  git clone https://github.com/piotrv1001/Chess_Angular.git
+```
 
-## Running unit tests
+Go to the project directory
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+  cd Chess_Angular
+```
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Start the server
 
-## Further help
+```bash
+  ng serve --open
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Features
+
+- All chess rules implemented
+- Resetting the board
+- Restoring previous moves
+- Move highlighting
+- Checkmate detection
+- Pawn promotion
+
+
+
