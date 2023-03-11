@@ -1,3 +1,5 @@
+import { Castles } from './castles';
+import { Rook } from './rook';
 import { Board } from './board';
 import { Position } from 'src/app/types/position';
 import { ChessEntity } from './chess-entity';
@@ -32,6 +34,46 @@ export class King extends ChessEntity {
             if(currSquare.occupiedBy) {
               const move = new Move(currSquare, foundSquare, currSquare.occupiedBy);
               moves.push(move);
+            }
+          }
+        }
+      }
+      if(currSquare.occupiedBy && !this.hasAlreadyMoved) {
+        // check for castles
+        const row = currPos.row;
+        let col = currPos.column;
+        while(col <= 8) {
+          col++;
+          const foundSquare = squares.find(square => square.position.row === row && square.position.column === col);
+          const sameTeam = (foundSquare?.occupiedBy?.isWhite === currSquare.occupiedBy?.isWhite);
+          const occupiedBy = foundSquare?.occupiedBy;
+          if(foundSquare) {
+            if(occupiedBy instanceof Rook && sameTeam && !occupiedBy.hasAlreadyMoved) {
+              const kingDestination = squares.find(square => square.position.row === row && square.position.column === col - 1);
+              if(kingDestination) {
+                const move = new Castles(currSquare, kingDestination, currSquare.occupiedBy, false);
+                moves.push(move);
+              }
+            } else if(foundSquare.occupiedBy != null) {
+              break;
+            }
+          }
+        }
+        col = currPos.column;
+        while(col >= 1) {
+          col--;
+          const foundSquare = squares.find(square => square.position.row === row && square.position.column === col);
+          const sameTeam = (foundSquare?.occupiedBy?.isWhite === currSquare.occupiedBy?.isWhite);
+          const occupiedBy = foundSquare?.occupiedBy;
+          if(foundSquare) {
+            if(occupiedBy instanceof Rook && sameTeam && !occupiedBy.hasAlreadyMoved) {
+              const kingDestination = squares.find(square => square.position.row === row && square.position.column === col + 2);
+              if(kingDestination) {
+                const move = new Castles(currSquare, kingDestination, currSquare.occupiedBy, true);
+                moves.push(move);
+              }
+            } else if(foundSquare.occupiedBy != null) {
+              break;
             }
           }
         }

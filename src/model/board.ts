@@ -1,3 +1,4 @@
+import { Castles } from './castles';
 import { GameResult } from './../app/types/game-result';
 import { Move } from './move';
 import { Pawn } from './pawn';
@@ -60,8 +61,31 @@ export class Board {
         if(square.occupiedBy instanceof King) {
           moves = moves.filter(move => {
             for(const [, enemyMoves] of this.enemyMoves) {
-              if(enemyMoves.map(enemyMove => enemyMove.endingPos).includes(move.endingPos)) {
+              const enemyEndingPosArray = enemyMoves.map(enemyMove => enemyMove.endingPos);
+              if(enemyEndingPosArray.includes(move.endingPos)) {
                 return false;
+              } if(move instanceof Castles) {
+                let middleSquare: Square | undefined;
+                const row = move.endingPos.position.row
+                let col = 0;
+                if(move.isLong) {
+                  col = move.endingPos.position.column + 1;
+                  middleSquare = this.squares.find(square => square.position.row === row && square.position.column === col);
+                } else {
+                  col = move.endingPos.position.column - 1;
+                  middleSquare = this.squares.find(square => square.position.row === row && square.position.column === col);
+                }
+                const kingCurrentSquare = move.startingPos;
+                if(middleSquare) {
+                  if(enemyEndingPosArray.includes(middleSquare)) {
+                    return false;
+                  }
+                }
+                if(kingCurrentSquare) {
+                  if(enemyEndingPosArray.includes(kingCurrentSquare)) {
+                    return false;
+                  }
+                }
               }
             }
             return true;
@@ -82,9 +106,30 @@ export class Board {
     const startingPos = this.squares.find(square => square.position === move.startingPos.position);
     const endingPos = this.squares.find(square => square.position === move.endingPos.position);
     if(startingPos && endingPos) {
+      move.piece.hasAlreadyMoved = true;
       startingPos.occupiedBy = null;
       endingPos.occupiedBy = move.piece;
       this.lastMove = move;
+      if(this.lastMove instanceof Castles) {
+        let rookSquare: Square | undefined;
+        let rookDestination: Square | undefined;
+        const row = this.lastMove?.endingPos.position.row;
+        let col = 0;
+        if(this.lastMove.isLong) {
+          col = this.lastMove.endingPos.position.column + 1;
+          rookSquare = this.squares.find(square => square.position.row === row && square.position.column === 1);
+          rookDestination = this.squares.find(square => square.position.row === row && square.position.column === col);
+        } else {
+          col = this.lastMove.endingPos.position.column - 1;
+          rookSquare = this.squares.find(square => square.position.row === row && square.position.column === 8);
+          rookDestination = this.squares.find(square => square.position.row === row && square.position.column === col);
+        }
+        if(rookSquare && rookDestination) {
+          const rook = rookSquare.occupiedBy;
+          rookDestination.occupiedBy = rook;
+          rookSquare.occupiedBy = null;
+        }
+      }
     }
     this.pinned = [];
     this.pathToCheck = [];
@@ -114,10 +159,6 @@ export class Board {
         }
       }
       return false;
-      // const legalMoves = this.lastMove?.piece.checkLegalMoves(this);
-      // if(legalMoves) {
-      //   return legalMoves.find(move => move.endingPos === kingSquare) !== undefined;
-      // }
     }
     return false;
   }
