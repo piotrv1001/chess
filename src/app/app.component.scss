@@ -6,26 +6,41 @@
 .container {
   display: flex;
   height: 100%;
+  width: 100%;
   justify-content: center;
   align-items: center;
 }
 
 .chess-board {
   display: grid;
-  width: 90vw;
-  height: 90vw;
+  width: 50%;
+  aspect-ratio: 1;
   max-width: 1200px;
   max-height: 1200px;
   grid-template-rows: repeat(8, 1fr);
   grid-template-columns: repeat(8, 1fr);
 }
 
+@media (max-width: 840px) {
+  .chess-board {
+    width: 80%;
+  }
+}
+
+@media (max-width: 665px) {
+  .chess-board {
+    width: 90%;
+  }
+}
+
 .controls {
   display: flex;
   align-items: center;
-  align-self: flex-start;
   margin-top: 2.5rem;
   margin-right: 1rem;
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
 }
 
 .next-move-info {
