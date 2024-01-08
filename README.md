@@ -1,5 +1,5 @@
 
-# Angular Chess
+# Chess
 
 This project is a single player version of the classic game of chess built in Angular, Typescript, HTML and CSS.
 
